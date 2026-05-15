@@ -147,93 +147,129 @@ const 듀란_시작프리셋 = [
 ];
 
 const 듀란_이동행동 = {
-  걷기: { 이름: "걷기", 분류: "이동", 폴더: "걷기", 파일: "걷기.webp", 지속: 2.4, 이동거리: 42 },
-  달리기: { 이름: "달리기", 분류: "이동", 폴더: "달리기", 파일: "달리기.webp", 지속: 1.45, 이동거리: 74 }
+  걷기: { 이름: "걷기", 분류: "이동", 폴더: "걷기", 파일: "걷기.webp", 지속: 2.4, 이동거리: 84 },
+  달리기: { 이름: "달리기", 분류: "이동", 폴더: "달리기", 파일: "달리기.webp", 지속: 1.45, 이동거리: 148 }
 };
 
-const 듀란_제자리행동 = {
-  기본: { 이름: "기본", 분류: "제자리", 폴더: "기본", 파일: "기본.webp", 지속: 2.0 },
-  기본1: { 이름: "기본1", 분류: "제자리", 폴더: "기본", 파일: "기본1.webp", 지속: 1.9 },
-  경계: { 이름: "경계", 분류: "제자리", 폴더: "경계", 파일: "경계.webp", 지속: 1.5 },
-  대화: { 이름: "대화", 분류: "제자리", 폴더: "대화", 파일: "대화.webp", 지속: 1.5 },
-  측면대화: { 이름: "측면대화", 분류: "제자리", 폴더: "대화", 파일: "측면대화.webp", 지속: 1.5 },
-  불안대화: { 이름: "불안대화", 분류: "제자리", 폴더: "불안대화", 파일: "불안대화.webp", 지속: 1.5 },
-  측면불안대화: { 이름: "측면불안대화", 분류: "제자리", 폴더: "불안대화", 파일: "측면불안대화.webp", 지속: 1.5 },
-  추리: { 이름: "추리", 분류: "제자리", 폴더: "추리", 파일: "추리.webp", 지속: 1.6 }
-};
+const 듀란_제자리행동 = makeDuranActionMap([
+  makeDuranAction("기본", "기본", "기본.webp", 2.0, "대기", ["중립"], ["범용", "평온", "정비"]),
+  makeDuranAction("기본1", "기본", "기본1.webp", 1.9, "대기", ["중립"], ["범용", "평온", "정비"]),
+  ...makeDuranActionVariants("기본", "기본", 3, 8, 1.8, "대기", ["중립"], ["범용", "평온", "정비"]),
+
+  makeDuranAction("경계", "경계", "경계.webp", 1.5, "대기", ["경계"], ["범용", "긴장", "위험", "불안", "낯섦"]),
+  ...makeDuranActionVariants("경계", "경계", 1, 4, 1.5, "대기", ["경계"], ["범용", "긴장", "위험", "불안", "낯섦"]),
+
+  makeDuranAction("대화", "대화", "대화.webp", 1.5, "대화", ["중립"], ["범용", "평온", "정비"]),
+  makeDuranAction("측면대화", "대화", "측면대화.webp", 1.5, "대화", ["중립"], ["범용", "평온", "낯섦"]),
+  ...makeDuranActionVariants("대화", "대화", 1, 5, 1.5, "대화", ["중립"], ["범용", "평온", "정비"]),
+
+  makeDuranAction("불안대화", "불안대화", "불안대화.webp", 1.5, "대화", ["불안"], ["긴장", "위험", "불안", "낯섦"]),
+  makeDuranAction("측면불안대화", "불안대화", "측면불안대화.webp", 1.5, "대화", ["불안"], ["긴장", "위험", "불안", "낯섦"]),
+  ...makeDuranActionVariants("불안대화", "불안대화", 1, 4, 1.5, "대화", ["불안"], ["긴장", "위험", "불안", "낯섦"]),
+
+  makeDuranAction("추리", "추리", "추리.webp", 1.6, "조사", ["숙고"], ["범용", "조사", "불안"]),
+  ...makeDuranActionVariants("추리", "추리", 1, 5, 1.6, "조사", ["숙고"], ["범용", "조사", "불안"]),
+
+  ...makeDuranActionVariants("결의", "결의", 1, 4, 1.5, "감정", ["결의"], ["긴장", "위험"]),
+  ...makeDuranActionVariants("난처", "난처", 1, 3, 1.5, "감정", ["난처"], ["낯섦", "긴장", "교환"]),
+  ...makeDuranActionVariants("놀람", "놀람", 1, 5, 1.2, "반응", ["충격"], ["긴장", "위험", "낯섦"]),
+  ...makeDuranActionVariants("충격", "충격", 1, 4, 1.2, "반응", ["충격"], ["긴장", "위험", "낯섦"]),
+  ...makeDuranActionVariants("호기심", "호기심", 1, 5, 1.5, "반응", ["관심"], ["평온", "조사", "낯섦"]),
+
+  ...makeDuranActionVariants("미소", "미소", 1, 8, 1.5, "감정", ["긍정"], ["평온", "교환", "정비"]),
+  ...makeDuranActionVariants("환한미소", "환한미소", 1, 2, 1.5, "감정", ["강한긍정"], ["평온", "교환"]),
+  ...makeDuranActionVariants("슬픔", "슬픔", 1, 4, 1.5, "감정", ["슬픔", "부정"], ["불안", "긴장"]),
+  ...makeDuranActionVariants("한숨", "한숨", 1, 4, 1.5, "대기", ["피로", "부정"], ["정비", "불안", "긴장"]),
+  ...makeDuranActionVariants("팔짱", "팔짱", 1, 3, 1.5, "대기", ["냉정"], ["긴장", "낯섦", "정비"]),
+  ...makeDuranActionVariants("턱집기", "턱집기", 1, 3, 1.5, "조사", ["숙고"], ["조사", "정비"]),
+
+  ...makeDuranActionVariants("메모", "메모", 1, 4, 1.5, "상호작용", ["중립", "숙고"], ["조사", "정비", "교환"]),
+  ...makeDuranActionVariants("줍기", "줍기", 1, 5, 1.5, "상호작용", ["중립"], ["조사", "정비"]),
+  ...makeDuranActionVariants("정면지시", "정면지시", 1, 5, 1.5, "지시", ["중립", "단호"], ["교환", "조사", "긴장"]),
+  ...makeDuranActionVariants("오른쪽지시", "오른쪽지시", 1, 4, 1.5, "지시", ["중립", "단호"], ["교환", "조사", "이동", "긴장"])
+]);
 
 const 듀란_종결행동 = {};
 
 const 듀란_환경별_행동풀 = {
   검문소: {
     이동: ["걷기"],
-    제자리: ["경계", "대화", "불안대화"],
+    타입: ["대기", "대화", "반응", "지시"],
+    상황: ["긴장", "위험"],
+    선호감정: ["중립", "경계", "불안", "난처", "단호"],
     종결: [],
-    반복: ["경계", "불안대화"],
     이동확률: 0.55,
     종결확률: 0
   },
   성벽: {
     이동: ["걷기"],
-    제자리: ["경계", "측면대화", "추리"],
+    타입: ["대기", "대화", "조사", "지시"],
+    상황: ["긴장", "낯섦"],
+    선호감정: ["중립", "경계", "숙고", "단호"],
     종결: [],
-    반복: ["경계", "측면대화"],
     이동확률: 0.5,
     종결확률: 0
   },
   숲: {
     이동: ["걷기"],
-    제자리: ["경계", "추리", "측면대화"],
+    타입: ["대기", "조사", "반응", "대화"],
+    상황: ["평온", "조사", "낯섦"],
+    선호감정: ["중립", "관심", "숙고", "경계"],
     종결: [],
-    반복: ["경계", "추리"],
     이동확률: 0.65,
     종결확률: 0
   },
   실내: {
     이동: ["걷기"],
-    제자리: ["대화", "추리", "불안대화"],
+    타입: ["대기", "대화", "조사", "감정", "상호작용"],
+    상황: ["평온", "정비", "교환"],
+    선호감정: ["중립", "긍정", "숙고", "난처", "피로"],
     종결: [],
-    반복: ["대화", "추리"],
     이동확률: 0.35,
     종결확률: 0
   },
   야외: {
     이동: ["걷기", "달리기"],
-    제자리: ["경계", "대화", "추리"],
+    타입: ["대기", "대화", "감정", "조사", "반응", "지시"],
+    상황: ["평온", "낯섦", "이동"],
+    선호감정: ["중립", "관심", "경계", "긍정", "숙고"],
     종결: [],
-    반복: ["경계", "기본", "기본1"],
     이동확률: 0.7,
     종결확률: 0
   },
   전장: {
     이동: ["달리기", "걷기"],
-    제자리: ["경계", "불안대화", "측면불안대화"],
+    타입: ["대기", "대화", "반응", "지시"],
+    상황: ["위험", "긴장", "불안"],
+    선호감정: ["경계", "불안", "충격", "결의", "피로", "단호"],
     종결: [],
-    반복: ["경계", "불안대화"],
     이동확률: 0.75,
     종결확률: 0.16
   },
   지하: {
     이동: ["걷기"],
-    제자리: ["경계", "추리", "불안대화"],
+    타입: ["대기", "조사", "대화", "반응", "상호작용"],
+    상황: ["불안", "조사", "긴장"],
+    선호감정: ["중립", "경계", "불안", "숙고", "충격"],
     종결: [],
-    반복: ["경계", "추리"],
     이동확률: 0.45,
     종결확률: 0
   },
   폐허: {
     이동: ["걷기"],
-    제자리: ["경계", "추리", "측면불안대화"],
+    타입: ["대기", "조사", "대화", "반응", "상호작용"],
+    상황: ["불안", "조사", "긴장"],
+    선호감정: ["중립", "경계", "불안", "숙고", "충격", "피로"],
     종결: [],
-    반복: ["경계", "추리"],
     이동확률: 0.5,
     종결확률: 0.08
   },
   default: {
     이동: ["걷기"],
-    제자리: ["경계", "대화", "추리"],
+    타입: ["대기", "대화", "조사", "반응"],
+    상황: ["범용"],
+    선호감정: ["중립", "경계", "숙고", "관심"],
     종결: [],
-    반복: ["경계", "기본", "기본1"],
     이동확률: 0.55,
     종결확률: 0
   }
@@ -241,48 +277,70 @@ const 듀란_환경별_행동풀 = {
 
 const 듀란_패별_행동보정 = {
   위협: {
-    추가제자리: ["경계", "불안대화", "측면불안대화"],
+    기본관계: "적대",
+    기본분위기: "위험",
+    타입: ["대기", "대화", "반응", "지시"],
+    선호감정: ["경계", "불안", "충격", "결의", "피로", "냉정", "단호"],
+    금지감정: ["긍정", "강한긍정", "관심"],
     추가종결: [],
-    반복: ["경계", "불안대화"],
     이동확률보정: 0.08,
     종결확률보정: 0.22
   },
   교환: {
-    추가제자리: ["대화", "측면대화"],
-    반복: ["대화", "측면대화"],
+    기본관계: "중립",
+    기본분위기: "교환",
+    타입: ["대화", "감정", "상호작용", "지시", "대기"],
+    선호감정: ["중립", "긍정", "강한긍정", "난처", "단호", "숙고"],
+    금지감정: [],
     이동확률보정: -0.08,
     종결확률보정: -0.06
   },
   조우: {
-    추가제자리: ["대화", "측면대화", "경계"],
-    반복: ["대화", "경계"],
+    기본관계: "낯섦",
+    기본분위기: "낯섦",
+    타입: ["대기", "대화", "반응", "감정", "조사"],
+    선호감정: ["중립", "경계", "관심", "난처", "충격", "숙고"],
+    금지감정: ["긍정", "강한긍정"],
+    우호관계시금지해제: ["긍정", "강한긍정"],
     이동확률보정: 0,
     종결확률보정: -0.04
   },
   조사: {
-    추가제자리: ["추리", "경계"],
-    반복: ["추리", "경계"],
+    기본관계: "중립",
+    기본분위기: "조사",
+    타입: ["조사", "상호작용", "대기", "반응", "지시"],
+    선호감정: ["중립", "관심", "숙고", "경계", "난처"],
+    금지감정: ["강한긍정"],
     이동확률보정: -0.03,
     종결확률보정: -0.06
   },
   이동: {
     추가이동: ["걷기", "달리기"],
-    추가제자리: ["경계"],
-    반복: ["경계", "기본", "기본1"],
+    기본관계: "중립",
+    기본분위기: "이동",
+    타입: ["대기", "반응", "지시"],
+    선호감정: ["중립", "경계", "관심", "단호"],
+    금지감정: ["강한긍정", "슬픔"],
     이동확률보정: 0.25,
     종결확률보정: -0.08
   },
   정비: {
-    추가제자리: ["대화", "추리", "기본", "기본1"],
-    반복: ["기본", "기본1", "추리"],
+    기본관계: "중립",
+    기본분위기: "정비",
+    타입: ["대기", "상호작용", "감정", "조사", "대화"],
+    선호감정: ["중립", "숙고", "피로", "긍정", "냉정"],
+    금지감정: ["충격", "강한긍정"],
     이동확률보정: -0.14,
     종결확률보정: -0.08
   },
   default: {
+    기본관계: "중립",
+    기본분위기: "중립",
     추가이동: [],
-    추가제자리: [],
+    타입: ["대기", "대화", "조사", "반응"],
+    선호감정: ["중립", "경계", "숙고", "관심"],
+    금지감정: [],
     추가종결: [],
-    반복: [],
     이동확률보정: 0,
     종결확률보정: 0
   }
@@ -333,6 +391,13 @@ export default {
 
     const 환경이름 = normalizeEnvironmentName(환경입력);
     const 패이름 = normalizeCardName(패입력);
+    const 듀란상황 = normalizeDuranSceneContext({
+      환경이름,
+      패이름,
+      관계입력: safeText(p.get("관계") || p.get("상대") || "", "", 20),
+      분위기입력: safeText(p.get("분위기") || p.get("상황") || "", "", 20),
+      감정입력: safeText(p.get("감정") || p.get("정서") || "", "", 80)
+    });
 
     const userAgent = request.headers.get("user-agent") || "";
     const 모바일여부 = isMobileUserAgent(userAgent);
@@ -342,6 +407,7 @@ export default {
     const svg = renderSceneSvg({
       환경이름,
       패이름,
+      듀란상황,
       선택환경파일,
       모바일여부
     });
@@ -350,7 +416,7 @@ export default {
   }
 };
 
-function renderSceneSvg({ 환경이름, 패이름, 선택환경파일, 모바일여부 }) {
+function renderSceneSvg({ 환경이름, 패이름, 듀란상황, 선택환경파일, 모바일여부 }) {
   const 환경레이어 = renderEnvironmentImage({
     선택환경파일,
     x: 0,
@@ -371,7 +437,7 @@ function renderSceneSvg({ 환경이름, 패이름, 선택환경파일, 모바일
     height: 원본_세로
   });
 
-  const 듀란타임라인 = buildDuranTimeline({ 환경이름, 패이름 });
+  const 듀란타임라인 = buildDuranTimeline({ 환경이름, 패이름, 듀란상황 });
   const 듀란레이어 = renderSingleImageSequence({
     타임라인: 듀란타임라인.items,
     width: 듀란_가로,
@@ -397,7 +463,7 @@ function renderSceneSvg({ 환경이름, 패이름, 선택환경파일, 모바일
   preserveAspectRatio="xMidYMid meet"
 >
   <title>Duran Scene</title>
-  <desc>환경=${escapeXml(환경이름)} / 선택환경파일=${escapeXml(선택환경파일)} / 카드=${escapeXml(패이름)} / 표시=${표시모드} / 듀란=${escapeXml(듀란타임라인.description)}</desc>
+  <desc>환경=${escapeXml(환경이름)} / 선택환경파일=${escapeXml(선택환경파일)} / 카드=${escapeXml(패이름)} / 관계=${escapeXml(듀란상황.관계)} / 분위기=${escapeXml(듀란상황.분위기)} / 허용감정=${escapeXml(듀란상황.허용감정.join(","))} / 표시=${표시모드} / 듀란=${escapeXml(듀란타임라인.description)}</desc>
 
   <defs>
     ${renderDefs({ 환경이름 })}
@@ -1084,7 +1150,7 @@ function renderCardImage({ 패이름, x, y, width, height }) {
   </image>`;
 }
 
-function buildDuranTimeline({ 환경이름, 패이름 }) {
+function buildDuranTimeline({ 환경이름, 패이름, 듀란상황 }) {
   const items = [];
   let t = 0;
   let x = 듀란_X;
@@ -1105,7 +1171,7 @@ function buildDuranTimeline({ 환경이름, 패이름 }) {
     t = item.종료;
   }
 
-  const plan = buildDuranActionPlan({ 환경이름, 패이름 });
+  const plan = buildDuranActionPlan({ 환경이름, 패이름, 듀란상황 });
   const afterPreset = buildDuranActionItems({
     actions: plan.actions,
     looped: plan.loop,
@@ -1123,8 +1189,8 @@ function buildDuranTimeline({ 환경이름, 패이름 }) {
   };
 }
 
-function buildDuranActionPlan({ 환경이름, 패이름 }) {
-  const pool = getDuranActionPool(환경이름, 패이름);
+function buildDuranActionPlan({ 환경이름, 패이름, 듀란상황 }) {
+  const pool = getDuranActionPool(환경이름, 패이름, 듀란상황);
   const terminalName = maybePickTerminalAction(pool);
 
   if (terminalName) {
@@ -1151,7 +1217,7 @@ function buildDuranActionPlan({ 환경이름, 패이름 }) {
 function buildDuranDirectionalPass({ pool, movementName, direction }) {
   const move = createMovementAction(movementName, direction);
   const firstAction = createStationaryAction(randomPick(pool.제자리));
-  const basicAction = createStationaryAction(randomPick(["기본", "기본1"]));
+  const basicAction = createStationaryAction(randomPick(pool.기본대기));
   const secondAction = createStationaryAction(randomPick(pool.제자리));
   const returnAction = createReturnAction({
     currentDx: move.이동X,
@@ -1226,18 +1292,292 @@ function createDuranTimelineItem({ clip, start, x, y, dx, dy, fixed, looped }) {
   };
 }
 
-function getDuranActionPool(환경이름, 패이름) {
+function getDuranActionPool(환경이름, 패이름, 듀란상황) {
   const envPool = 듀란_환경별_행동풀[환경이름] || 듀란_환경별_행동풀.default;
   const cardMod = 듀란_패별_행동보정[패이름] || 듀란_패별_행동보정.default;
+  const context = 듀란상황 || normalizeDuranSceneContext({ 환경이름, 패이름 });
+  const allowedEmotions = context.허용감정;
+  const preferredTypes = Array.isArray(cardMod.타입) && cardMod.타입.length > 0
+    ? cardMod.타입
+    : envPool.타입;
+  const preferredSituations = mergeActionNames(envPool.상황, cardMod.기본분위기, context.분위기);
+  const stationaryNames = selectDuranStationaryActionNames({
+    allowedEmotions,
+    preferredTypes,
+    preferredSituations,
+    preferredEmotions: mergeActionNames(envPool.선호감정, cardMod.선호감정)
+  });
 
   return {
     이동: mergeActionNames(envPool.이동, cardMod.추가이동),
-    제자리: mergeActionNames(envPool.제자리, cardMod.추가제자리),
+    제자리: stationaryNames.length > 0 ? stationaryNames : ["경계", "기본", "기본1"],
+    기본대기: selectDuranBasicActionNames(allowedEmotions),
     종결: mergeActionNames(envPool.종결, cardMod.추가종결),
-    반복: mergeActionNames(cardMod.반복, envPool.반복),
     이동확률: clamp01((envPool.이동확률 ?? 0.5) + (cardMod.이동확률보정 || 0)),
-    종결확률: clamp01((envPool.종결확률 || 0) + (cardMod.종결확률보정 || 0))
+    종결확률: clamp01((envPool.종결확률 || 0) + (cardMod.종결확률보정 || 0)),
+    관계: context.관계,
+    분위기: context.분위기,
+    허용감정: allowedEmotions
   };
+}
+
+function makeDuranActionMap(actions) {
+  return Object.fromEntries(actions.map((action) => [action.이름, action]));
+}
+
+function makeDuranAction(이름, 폴더, 파일, 지속, 타입, 감정, 상황) {
+  return {
+    이름,
+    분류: "제자리",
+    폴더,
+    파일,
+    지속,
+    타입,
+    감정: Array.isArray(감정) ? 감정 : [감정],
+    상황: Array.isArray(상황) ? 상황 : [상황]
+  };
+}
+
+function makeDuranActionVariants(이름, 폴더, 시작, 종료, 지속, 타입, 감정, 상황) {
+  const actions = [];
+
+  for (let i = 시작; i <= 종료; i += 1) {
+    actions.push(
+      makeDuranAction(
+        `${이름}${i}`,
+        폴더,
+        `${이름}${i}_10F.webp`,
+        지속,
+        타입,
+        감정,
+        상황
+      )
+    );
+  }
+
+  return actions;
+}
+
+function normalizeDuranSceneContext({ 환경이름, 패이름, 관계입력 = "", 분위기입력 = "", 감정입력 = "" }) {
+  const envPool = 듀란_환경별_행동풀[환경이름] || 듀란_환경별_행동풀.default;
+  const cardMod = 듀란_패별_행동보정[패이름] || 듀란_패별_행동보정.default;
+  const 관계명시 = !!String(관계입력 || "").trim();
+  const 관계 = normalizeDuranRelation(관계입력 || cardMod.기본관계 || "중립");
+  const 분위기 = normalizeDuranMood(분위기입력 || cardMod.기본분위기 || envPool.상황?.[0] || "중립");
+  const 요청감정 = normalizeDuranEmotionList(감정입력);
+  const 금지감정 = getContextualDuranEmotionBans(cardMod, 관계, 관계명시);
+  const 허용감정 = getAllowedDuranEmotions({
+    관계,
+    분위기,
+    요청감정,
+    선호감정: mergeActionNames(envPool.선호감정, cardMod.선호감정),
+    금지감정
+  });
+
+  return {
+    관계,
+    분위기,
+    요청감정,
+    허용감정
+  };
+}
+
+function getContextualDuranEmotionBans(cardMod, 관계, 관계명시) {
+  const bans = [...(cardMod.금지감정 || [])];
+
+  if (관계명시 && 관계 === "우호" && Array.isArray(cardMod.우호관계시금지해제)) {
+    return bans.filter((emotion) => !cardMod.우호관계시금지해제.includes(emotion));
+  }
+
+  return bans;
+}
+
+function normalizeDuranRelation(value) {
+  const v = compactDuranToken(value);
+  const aliases = {
+    우호: "우호",
+    우호적: "우호",
+    호의: "우호",
+    반가움: "우호",
+    친구: "우호",
+    아군: "우호",
+    중립: "중립",
+    보통: "중립",
+    낯섦: "낯섦",
+    낯선: "낯섦",
+    낯선사람: "낯섦",
+    초면: "낯섦",
+    모름: "낯섦",
+    적대: "적대",
+    적대적: "적대",
+    반갑지않음: "적대",
+    비우호: "적대",
+    적: "적대",
+    위협: "적대"
+  };
+
+  return aliases[v] || "중립";
+}
+
+function normalizeDuranMood(value) {
+  const v = compactDuranToken(value);
+  const aliases = {
+    중립: "중립",
+    보통: "중립",
+    평온: "평온",
+    평화: "평온",
+    편안: "평온",
+    교환: "교환",
+    거래: "교환",
+    대화: "교환",
+    낯섦: "낯섦",
+    낯선: "낯섦",
+    긴장: "긴장",
+    긴장감: "긴장",
+    위험: "위험",
+    전투: "위험",
+    위협: "위험",
+    불안: "불안",
+    공포: "불안",
+    조사: "조사",
+    탐색: "조사",
+    추리: "조사",
+    이동: "이동",
+    정비: "정비",
+    휴식: "정비"
+  };
+
+  return aliases[v] || "중립";
+}
+
+function normalizeDuranEmotionList(value) {
+  const raw = String(value || "").trim();
+  if (!raw || compactDuranToken(raw) === "자동") return [];
+
+  return raw
+    .split(/[,\s|/]+/g)
+    .map(normalizeDuranEmotion)
+    .filter(Boolean);
+}
+
+function normalizeDuranEmotion(value) {
+  const v = compactDuranToken(value);
+  const aliases = {
+    중립: "중립",
+    긍정: "긍정",
+    미소: "긍정",
+    강한긍정: "강한긍정",
+    환한미소: "강한긍정",
+    관심: "관심",
+    호기심: "관심",
+    경계: "경계",
+    불안: "불안",
+    난처: "난처",
+    결의: "결의",
+    충격: "충격",
+    놀람: "충격",
+    슬픔: "슬픔",
+    부정: "부정",
+    피로: "피로",
+    한숨: "피로",
+    냉정: "냉정",
+    팔짱: "냉정",
+    숙고: "숙고",
+    추리: "숙고",
+    단호: "단호",
+    지시: "단호"
+  };
+
+  return aliases[v] || null;
+}
+
+function getAllowedDuranEmotions({ 관계, 분위기, 요청감정, 선호감정, 금지감정 }) {
+  const byRelation = {
+    우호: ["중립", "긍정", "강한긍정", "관심", "숙고", "난처", "피로", "단호"],
+    중립: ["중립", "관심", "숙고", "경계", "난처", "피로", "냉정", "단호"],
+    낯섦: ["중립", "관심", "숙고", "경계", "난처", "충격", "불안", "냉정", "단호"],
+    적대: ["중립", "경계", "불안", "충격", "결의", "피로", "부정", "냉정", "단호"]
+  };
+  const byMoodAdd = {
+    평온: ["긍정", "강한긍정", "관심"],
+    교환: ["긍정", "난처", "단호", "숙고"],
+    낯섦: ["경계", "난처", "관심", "충격"],
+    긴장: ["경계", "불안", "충격", "결의", "냉정", "단호"],
+    위험: ["경계", "불안", "충격", "결의", "피로", "단호"],
+    불안: ["경계", "불안", "충격", "피로", "부정"],
+    조사: ["관심", "숙고", "경계", "중립"],
+    이동: ["경계", "관심", "단호", "중립"],
+    정비: ["중립", "숙고", "피로", "긍정", "냉정"]
+  };
+  const byRelationBan = {
+    우호: [],
+    중립: ["강한긍정"],
+    낯섦: ["긍정", "강한긍정"],
+    적대: ["긍정", "강한긍정", "관심"]
+  };
+  const byMoodBan = {
+    위험: ["긍정", "강한긍정"],
+    불안: ["긍정", "강한긍정"],
+    긴장: ["강한긍정"]
+  };
+  const allowed = new Set(byRelation[관계] || byRelation.중립);
+
+  for (const emotion of byMoodAdd[분위기] || []) {
+    allowed.add(emotion);
+  }
+  for (const emotion of 선호감정 || []) {
+    allowed.add(emotion);
+  }
+  for (const emotion of 요청감정 || []) {
+    allowed.add(emotion);
+  }
+
+  const banned = new Set([
+    ...(byRelationBan[관계] || []),
+    ...(byMoodBan[분위기] || []),
+    ...(금지감정 || [])
+  ]);
+
+  return [...allowed].filter((emotion) => !banned.has(emotion));
+}
+
+function selectDuranStationaryActionNames({ allowedEmotions, preferredTypes, preferredSituations, preferredEmotions }) {
+  const allowedSet = new Set(allowedEmotions);
+  const typeSet = new Set(preferredTypes);
+  const situationSet = new Set(["범용", ...preferredSituations]);
+  const preferredEmotionSet = new Set(preferredEmotions);
+
+  const scored = Object.values(듀란_제자리행동)
+    .filter((action) => action.감정.some((emotion) => allowedSet.has(emotion)))
+    .filter((action) => typeSet.size === 0 || typeSet.has(action.타입))
+    .filter((action) => action.상황.some((situation) => situationSet.has(situation)))
+    .map((action) => ({
+      action,
+      score:
+        action.감정.some((emotion) => preferredEmotionSet.has(emotion)) ? 2 : 1
+    }));
+
+  const weighted = [];
+  for (const item of scored) {
+    for (let i = 0; i < item.score; i += 1) {
+      weighted.push(item.action.이름);
+    }
+  }
+
+  return weighted.length > 0 ? weighted : ["경계", "기본", "기본1"];
+}
+
+function selectDuranBasicActionNames(allowedEmotions) {
+  const neutralAllowed = allowedEmotions.includes("중립");
+  const names = neutralAllowed
+    ? ["기본", "기본1", "기본3", "기본4", "기본5", "기본6", "기본7", "기본8"]
+    : ["경계"];
+
+  return names.filter((name) => !!듀란_제자리행동[name]);
+}
+
+function compactDuranToken(value) {
+  return String(value || "").replace(/[\s_\-]+/g, "").trim();
 }
 
 function mergeActionNames(...lists) {
@@ -1795,6 +2135,9 @@ function getHelpText() {
     "받는 값:",
     "  - 환경",
     "  - 카드 또는 패",
+    "  - 관계: 우호/중립/낯섦/적대",
+    "  - 분위기 또는 상황: 평온/긴장/위험/불안/조사/이동/정비",
+    "  - 감정 또는 정서: 중립/긍정/관심/경계/불안/난처/결의/충격/숙고 등",
     "",
     "레이어 순서:",
     "  - 환경",
@@ -1811,7 +2154,9 @@ function getHelpText() {
     "  - 패: 환경반복 시작과 동시에 패/{패}.webp 표시 후 계속 유지",
     "  - 효과: 패 등장 시 소환 파문/접지 그림자/짧은 반짝임, 이후 환경별 약한 잔향 유지",
     "  - 듀란: 기본 4초 -> 놀람 3.5초 고정 후 이동 > 행동 > 기본/기본1 > 행동 > 복귀를 양방향 루프로 조합",
+    "  - 행동 선택: 타입/감정/상황 태그를 기준으로 필터링하며, 조우 기본값은 낯섦이라 미소류를 막음",
     "  - 이동 행동이 왼쪽으로 갈 때는 원본 오른쪽 방향 애니메이션을 좌우 반전",
+    "  - 이동거리: 걷기 84px, 달리기 148px",
     "  - 루프 행동은 WebP href를 고정하고 display 전환으로 차례를 제어해 재생을 유지",
     "  - 종결 행동은 이후 행동 없이 해당 상태로 고정되며, 현재는 비활성화",
     "  - 데스크탑은 원본 700x559 표시",
