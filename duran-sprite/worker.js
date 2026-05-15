@@ -140,6 +140,8 @@ const 환경_효과테마 = {
 
 const 듀란_루프_시작_초 = 7.5;
 const 듀란_복귀_최소_거리 = 1;
+const EMPTY_IMAGE_URL =
+  "data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221%22%20height=%221%22%3E%3C/svg%3E";
 
 const 듀란_시작프리셋 = [
   { 이름: "기본", 분류: "시작", 폴더: "기본", 파일: "기본.webp", 지속: 4.0 },
@@ -1149,28 +1151,27 @@ function buildDuranActionPlan({ 환경이름, 패이름 }) {
   }
 
   const actions = [];
-  const shouldMove = Math.random() < pool.이동확률 && pool.이동.length > 0;
+  const movementName = randomPick(pool.이동.length > 0 ? pool.이동 : ["걷기"]);
+  const firstDirection = Math.random() < 0.5 ? -1 : 1;
 
-  if (shouldMove) {
-    actions.push(createMovementAction(randomPick(pool.이동)));
-  }
-
-  const stationaryCount = shouldMove ? 1 + randomInt(0, 1) : 2;
-  for (const name of randomPickUnique(pool.제자리, stationaryCount)) {
-    actions.push(createStationaryAction(name));
-  }
-
-  const currentDx = actions.reduce((sum, action) => sum + (Number(action.이동X) || 0), 0);
-  const currentDy = actions.reduce((sum, action) => sum + (Number(action.이동Y) || 0), 0);
-
-  if (Math.abs(currentDx) >= 듀란_복귀_최소_거리 || Math.abs(currentDy) >= 듀란_복귀_최소_거리) {
-    actions.push(createReturnAction({ currentDx, currentDy }));
-  }
-
-  const loopName = randomPick(pool.반복.length > 0 ? pool.반복 : pool.제자리);
-  actions.push(createStationaryAction(loopName || "기본"));
+  actions.push(...buildDuranDirectionalPass({ pool, movementName, direction: firstDirection }));
+  actions.push(...buildDuranDirectionalPass({ pool, movementName, direction: -firstDirection }));
 
   return { loop: true, actions };
+}
+
+function buildDuranDirectionalPass({ pool, movementName, direction }) {
+  const move = createMovementAction(movementName, direction);
+  const firstAction = createStationaryAction(randomPick(pool.제자리));
+  const basicAction = createStationaryAction(randomPick(["기본", "기본1"]));
+  const secondAction = createStationaryAction(randomPick(pool.제자리));
+  const returnAction = createReturnAction({
+    currentDx: move.이동X,
+    currentDy: move.이동Y,
+    movementName
+  });
+
+  return [move, firstAction, basicAction, secondAction, returnAction];
 }
 
 function buildDuranActionItems({ actions, looped, start, x, y }) {
@@ -1261,9 +1262,8 @@ function maybePickTerminalAction(pool) {
   return randomPick(pool.종결);
 }
 
-function createMovementAction(name) {
+function createMovementAction(name, direction = Math.random() < 0.5 ? -1 : 1) {
   const clip = 듀란_이동행동[name] || 듀란_이동행동.걷기;
-  const direction = Math.random() < 0.5 ? -1 : 1;
 
   return {
     ...clip,
@@ -1280,9 +1280,9 @@ function createTerminalAction(name) {
   return { ...(듀란_종결행동[name] || 듀란_종결행동.충격주저앉음), 이동X: 0, 이동Y: 0 };
 }
 
-function createReturnAction({ currentDx, currentDy }) {
+function createReturnAction({ currentDx, currentDy, movementName }) {
   const distance = Math.max(Math.abs(currentDx), Math.abs(currentDy));
-  const clip = distance > 58 ? 듀란_이동행동.달리기 : 듀란_이동행동.걷기;
+  const clip = 듀란_이동행동[movementName] || (distance > 58 ? 듀란_이동행동.달리기 : 듀란_이동행동.걷기);
   const duration = clip === 듀란_이동행동.달리기 ? 1.35 : 2.0;
 
   return {
@@ -1309,6 +1309,9 @@ function renderSingleImageSequence({ 타임라인, width, height }) {
     const translateAnimation = item.반복
       ? renderLoopTransformAnimation(item, width)
       : renderOneShotTransformAnimation(item, width);
+    const hrefAnimation = item.반복
+      ? renderLoopHrefAnimation(item, href)
+      : "";
 
     const transitionEffect = renderDuranImageTransitionEffects({
       item,
@@ -1320,18 +1323,20 @@ function renderSingleImageSequence({ 타임라인, width, height }) {
     return `
   <g
     transform="${escapeXml(initialTransform)}"
-    ${item.반복 ? 'opacity="0"' : `display="${item.시작 === 0 ? "inline" : "none"}"`}
+    display="${item.반복 ? "none" : item.시작 === 0 ? "inline" : "none"}"
   >
     ${displayAnimation}${translateAnimation}
     <g transform="${escapeXml(flipTransform)}">
       <image
-        href="${escapeXml(href)}"
+        href="${escapeXml(item.반복 ? EMPTY_IMAGE_URL : href)}"
         x="0"
         y="0"
         width="${width}"
         height="${height}"
         preserveAspectRatio="none"
-      />
+      >
+        ${hrefAnimation}
+      </image>
     </g>
   </g>${transitionEffect}`;
   }).join("");
@@ -1371,14 +1376,28 @@ function renderLoopVisibilityAnimation(item) {
   const times = makeLoopKeyTimes(item);
 
   return `<animate
-      attributeName="opacity"
-      values="${times.opacityValues}"
+      attributeName="display"
+      values="${times.displayValues}"
       keyTimes="${times.keyTimes}"
       calcMode="discrete"
       begin="${fmt(item.루프시작)}s"
       dur="${fmt(item.루프길이)}s"
       repeatCount="indefinite"
     />\n    `;
+}
+
+function renderLoopHrefAnimation(item, href) {
+  const times = makeLoopKeyTimes(item);
+
+  return `<animate
+          attributeName="href"
+          values="${escapeXml(makeLoopHrefValues(times, href))}"
+          keyTimes="${times.keyTimes}"
+          calcMode="discrete"
+          begin="${fmt(item.루프시작)}s"
+          dur="${fmt(item.루프길이)}s"
+          repeatCount="indefinite"
+        />`;
 }
 
 function renderLoopTransformAnimation(item, width) {
@@ -1410,20 +1429,20 @@ function makeLoopKeyTimes(item) {
   const endAtOne = endOffset >= 1;
 
   if (startAtZero && endAtOne) {
-    return { keyTimes: "0;1", opacityValues: "1;1", startAtZero, endAtOne };
+    return { keyTimes: "0;1", displayValues: "inline;inline", startAtZero, endAtOne };
   }
 
   if (startAtZero) {
-    return { keyTimes: `0;${fmt(endOffset)};1`, opacityValues: "1;0;0", startAtZero, endAtOne };
+    return { keyTimes: `0;${fmt(endOffset)};1`, displayValues: "inline;none;none", startAtZero, endAtOne };
   }
 
   if (endAtOne) {
-    return { keyTimes: `0;${fmt(startOffset)};1`, opacityValues: "0;1;1", startAtZero, endAtOne };
+    return { keyTimes: `0;${fmt(startOffset)};1`, displayValues: "none;inline;inline", startAtZero, endAtOne };
   }
 
   return {
     keyTimes: `0;${fmt(startOffset)};${fmt(endOffset)};1`,
-    opacityValues: "0;1;0;0",
+    displayValues: "none;inline;none;none",
     startAtZero,
     endAtOne
   };
@@ -1434,6 +1453,13 @@ function makeLoopValues({ startValue, endValue, startAtZero, endAtOne }) {
   if (startAtZero) return `${startValue};${endValue};${endValue}`;
   if (endAtOne) return `${startValue};${startValue};${endValue}`;
   return `${startValue};${startValue};${endValue};${endValue}`;
+}
+
+function makeLoopHrefValues(times, href) {
+  if (times.startAtZero && times.endAtOne) return `${href};${href}`;
+  if (times.startAtZero) return `${href};${EMPTY_IMAGE_URL};${EMPTY_IMAGE_URL}`;
+  if (times.endAtOne) return `${EMPTY_IMAGE_URL};${href};${href}`;
+  return `${EMPTY_IMAGE_URL};${href};${EMPTY_IMAGE_URL};${EMPTY_IMAGE_URL}`;
 }
 
 function makeDuranTranslate(x, y) {
@@ -1820,8 +1846,9 @@ function getHelpText() {
     "  - 환경: 환경정지/기본.webp -> 환경/{선택환경파일}.webp -> 환경반복/{선택환경파일}.webp",
     "  - 패: 환경반복 시작과 동시에 패/{패}.webp 표시 후 계속 유지",
     "  - 효과: 패 등장 시 소환 파문/접지 그림자/짧은 반짝임, 이후 환경별 약한 잔향 유지",
-    "  - 듀란: 기본 4초 -> 놀람 3.5초 고정 후 환경/패별 이동·제자리 행동을 랜덤 루프로 조합",
+    "  - 듀란: 기본 4초 -> 놀람 3.5초 고정 후 이동 > 행동 > 기본/기본1 > 행동 > 복귀를 양방향 루프로 조합",
     "  - 이동 행동이 왼쪽으로 갈 때는 원본 오른쪽 방향 애니메이션을 좌우 반전",
+    "  - 루프 행동은 해당 차례에 실제 WebP href를 넣어 첫 프레임부터 재생",
     "  - 종결 행동(현재: 충격주저앉음)이 선택되면 이후 행동 없이 해당 상태로 고정",
     "  - 데스크탑은 원본 700x559 표시",
     "  - 모바일은 중앙 기준 559x559로 크롭 표시",
