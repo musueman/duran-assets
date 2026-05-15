@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>듀란일대기 미리보기</title>
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      color: #201f1a;
+      background: #f2f0ea;
+      font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", "Segoe UI", sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <p>듀란일대기를 불러오는 중입니다.</p>
+  <script type="module">
+    import { renderDuranHomePage } from "./homepage.js";
+
+    document.open();
+    document.write(renderDuranHomePage({ assetBase: "." }));
+    document.close();
+  </script>
+</body>
+</html>
