@@ -140,8 +140,6 @@ const 환경_효과테마 = {
 
 const 듀란_루프_시작_초 = 7.5;
 const 듀란_복귀_최소_거리 = 1;
-const EMPTY_IMAGE_URL =
-  "data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20width=%221%22%20height=%221%22%3E%3C/svg%3E";
 
 const 듀란_시작프리셋 = [
   { 이름: "기본", 분류: "시작", 폴더: "기본", 파일: "기본.webp", 지속: 4.0 },
@@ -1309,9 +1307,6 @@ function renderSingleImageSequence({ 타임라인, width, height }) {
     const translateAnimation = item.반복
       ? renderLoopTransformAnimation(item, width)
       : renderOneShotTransformAnimation(item, width);
-    const hrefAnimation = item.반복
-      ? renderLoopHrefAnimation(item, href)
-      : "";
 
     const transitionEffect = renderDuranImageTransitionEffects({
       item,
@@ -1328,15 +1323,13 @@ function renderSingleImageSequence({ 타임라인, width, height }) {
     ${displayAnimation}${translateAnimation}
     <g transform="${escapeXml(flipTransform)}">
       <image
-        href="${escapeXml(item.반복 ? EMPTY_IMAGE_URL : href)}"
+        href="${escapeXml(href)}"
         x="0"
         y="0"
         width="${width}"
         height="${height}"
         preserveAspectRatio="none"
-      >
-        ${hrefAnimation}
-      </image>
+      />
     </g>
   </g>${transitionEffect}`;
   }).join("");
@@ -1384,20 +1377,6 @@ function renderLoopVisibilityAnimation(item) {
       dur="${fmt(item.루프길이)}s"
       repeatCount="indefinite"
     />\n    `;
-}
-
-function renderLoopHrefAnimation(item, href) {
-  const times = makeLoopKeyTimes(item);
-
-  return `<animate
-          attributeName="href"
-          values="${escapeXml(makeLoopHrefValues(times, href))}"
-          keyTimes="${times.keyTimes}"
-          calcMode="discrete"
-          begin="${fmt(item.루프시작)}s"
-          dur="${fmt(item.루프길이)}s"
-          repeatCount="indefinite"
-        />`;
 }
 
 function renderLoopTransformAnimation(item, width) {
@@ -1453,13 +1432,6 @@ function makeLoopValues({ startValue, endValue, startAtZero, endAtOne }) {
   if (startAtZero) return `${startValue};${endValue};${endValue}`;
   if (endAtOne) return `${startValue};${startValue};${endValue}`;
   return `${startValue};${startValue};${endValue};${endValue}`;
-}
-
-function makeLoopHrefValues(times, href) {
-  if (times.startAtZero && times.endAtOne) return `${href};${href}`;
-  if (times.startAtZero) return `${href};${EMPTY_IMAGE_URL};${EMPTY_IMAGE_URL}`;
-  if (times.endAtOne) return `${EMPTY_IMAGE_URL};${href};${href}`;
-  return `${EMPTY_IMAGE_URL};${href};${EMPTY_IMAGE_URL};${EMPTY_IMAGE_URL}`;
 }
 
 function makeDuranTranslate(x, y) {
@@ -1848,7 +1820,7 @@ function getHelpText() {
     "  - 효과: 패 등장 시 소환 파문/접지 그림자/짧은 반짝임, 이후 환경별 약한 잔향 유지",
     "  - 듀란: 기본 4초 -> 놀람 3.5초 고정 후 이동 > 행동 > 기본/기본1 > 행동 > 복귀를 양방향 루프로 조합",
     "  - 이동 행동이 왼쪽으로 갈 때는 원본 오른쪽 방향 애니메이션을 좌우 반전",
-    "  - 루프 행동은 해당 차례에 실제 WebP href를 넣어 첫 프레임부터 재생",
+    "  - 루프 행동은 WebP href를 고정하고 display 전환으로 차례를 제어해 재생을 유지",
     "  - 종결 행동(현재: 충격주저앉음)이 선택되면 이후 행동 없이 해당 상태로 고정",
     "  - 데스크탑은 원본 700x559 표시",
     "  - 모바일은 중앙 기준 559x559로 크롭 표시",
