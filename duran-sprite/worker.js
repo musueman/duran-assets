@@ -138,39 +138,165 @@ const 환경_효과테마 = {
   }
 };
 
-/*
-  듀란 시퀀스
-  1. 기본 4초
-  2. 놀람 3.5초
-  3. 기본 고정
-*/
-const 듀란_시퀀스_1 = [
-  {
-    순서: 1,
-    폴더: 듀란_폴더명,
-    파일: "기본.webp",
-    지속: 4.0,
-    이동X: 0,
-    이동Y: 0
-  },
-  {
-    순서: 2,
-    폴더: 듀란_폴더명,
-    파일: "놀람.webp",
-    지속: 3.5,
-    이동X: 0,
-    이동Y: 0
-  },
-  {
-    순서: 3,
-    폴더: 듀란_폴더명,
-    파일: "기본.webp",
-    지속: 0,
-    이동X: 0,
-    이동Y: 0,
-    고정: true
-  }
+const 듀란_루프_시작_초 = 7.5;
+const 듀란_최소_루프_초 = 8.0;
+const 듀란_복귀_최소_거리 = 1;
+
+const 듀란_시작프리셋 = [
+  { 이름: "기본", 분류: "시작", 폴더: "기본", 파일: "기본.webp", 지속: 4.0 },
+  { 이름: "놀람", 분류: "시작", 폴더: "놀람", 파일: "놀람.webp", 지속: 3.5 }
 ];
+
+const 듀란_이동행동 = {
+  걷기: { 이름: "걷기", 분류: "이동", 폴더: "걷기", 파일: "걷기.webp", 지속: 2.4, 이동거리: 42 },
+  달리기: { 이름: "달리기", 분류: "이동", 폴더: "달리기", 파일: "달리기.webp", 지속: 1.45, 이동거리: 74 }
+};
+
+const 듀란_제자리행동 = {
+  기본: { 이름: "기본", 분류: "제자리", 폴더: "기본", 파일: "기본.webp", 지속: 2.4 },
+  경계: { 이름: "경계", 분류: "제자리", 폴더: "경계", 파일: "경계.webp", 지속: 3.0 },
+  대화: { 이름: "대화", 분류: "제자리", 폴더: "대화", 파일: "대화.webp", 지속: 3.2 },
+  측면대화: { 이름: "측면대화", 분류: "제자리", 폴더: "대화", 파일: "측면대화.webp", 지속: 3.0 },
+  불안대화: { 이름: "불안대화", 분류: "제자리", 폴더: "불안대화", 파일: "불안대화.webp", 지속: 3.1 },
+  측면불안대화: { 이름: "측면불안대화", 분류: "제자리", 폴더: "불안대화", 파일: "측면불안대화.webp", 지속: 3.1 },
+  추리: { 이름: "추리", 분류: "제자리", 폴더: "추리", 파일: "추리.webp", 지속: 3.2 }
+};
+
+const 듀란_종결행동 = {
+  충격주저앉음: {
+    이름: "충격주저앉음",
+    분류: "종결",
+    폴더: "충격주저앉음",
+    파일: "충격주저앉음.webp",
+    지속: 0,
+    고정: true,
+    이후행동없음: true
+  }
+};
+
+const 듀란_환경별_행동풀 = {
+  검문소: {
+    이동: ["걷기"],
+    제자리: ["경계", "대화", "불안대화"],
+    종결: [],
+    반복: ["경계", "불안대화"],
+    이동확률: 0.55,
+    종결확률: 0
+  },
+  성벽: {
+    이동: ["걷기"],
+    제자리: ["경계", "측면대화", "추리"],
+    종결: [],
+    반복: ["경계", "측면대화"],
+    이동확률: 0.5,
+    종결확률: 0
+  },
+  숲: {
+    이동: ["걷기"],
+    제자리: ["경계", "추리", "측면대화"],
+    종결: [],
+    반복: ["경계", "추리"],
+    이동확률: 0.65,
+    종결확률: 0
+  },
+  실내: {
+    이동: ["걷기"],
+    제자리: ["대화", "추리", "불안대화"],
+    종결: [],
+    반복: ["대화", "추리"],
+    이동확률: 0.35,
+    종결확률: 0
+  },
+  야외: {
+    이동: ["걷기", "달리기"],
+    제자리: ["경계", "대화", "추리"],
+    종결: [],
+    반복: ["경계", "기본"],
+    이동확률: 0.7,
+    종결확률: 0
+  },
+  전장: {
+    이동: ["달리기", "걷기"],
+    제자리: ["경계", "불안대화", "측면불안대화"],
+    종결: ["충격주저앉음"],
+    반복: ["경계", "불안대화"],
+    이동확률: 0.75,
+    종결확률: 0.16
+  },
+  지하: {
+    이동: ["걷기"],
+    제자리: ["경계", "추리", "불안대화"],
+    종결: [],
+    반복: ["경계", "추리"],
+    이동확률: 0.45,
+    종결확률: 0
+  },
+  폐허: {
+    이동: ["걷기"],
+    제자리: ["경계", "추리", "측면불안대화"],
+    종결: ["충격주저앉음"],
+    반복: ["경계", "추리"],
+    이동확률: 0.5,
+    종결확률: 0.08
+  },
+  default: {
+    이동: ["걷기"],
+    제자리: ["경계", "대화", "추리"],
+    종결: [],
+    반복: ["경계", "기본"],
+    이동확률: 0.55,
+    종결확률: 0
+  }
+};
+
+const 듀란_패별_행동보정 = {
+  위협: {
+    추가제자리: ["경계", "불안대화", "측면불안대화"],
+    추가종결: ["충격주저앉음"],
+    반복: ["경계", "불안대화"],
+    이동확률보정: 0.08,
+    종결확률보정: 0.22
+  },
+  교환: {
+    추가제자리: ["대화", "측면대화"],
+    반복: ["대화", "측면대화"],
+    이동확률보정: -0.08,
+    종결확률보정: -0.06
+  },
+  조우: {
+    추가제자리: ["대화", "측면대화", "경계"],
+    반복: ["대화", "경계"],
+    이동확률보정: 0,
+    종결확률보정: -0.04
+  },
+  조사: {
+    추가제자리: ["추리", "경계"],
+    반복: ["추리", "경계"],
+    이동확률보정: -0.03,
+    종결확률보정: -0.06
+  },
+  이동: {
+    추가이동: ["걷기", "달리기"],
+    추가제자리: ["경계"],
+    반복: ["경계", "기본"],
+    이동확률보정: 0.25,
+    종결확률보정: -0.08
+  },
+  정비: {
+    추가제자리: ["대화", "추리", "기본"],
+    반복: ["기본", "추리"],
+    이동확률보정: -0.14,
+    종결확률보정: -0.08
+  },
+  default: {
+    추가이동: [],
+    추가제자리: [],
+    추가종결: [],
+    반복: [],
+    이동확률보정: 0,
+    종결확률보정: 0
+  }
+};
 
 const TEXT_HEADERS = {
   "content-type": "text/plain; charset=utf-8",
@@ -255,11 +381,9 @@ function renderSceneSvg({ 환경이름, 패이름, 선택환경파일, 모바일
     height: 원본_세로
   });
 
-  const 듀란타임라인 = buildTimeline(듀란_시퀀스_1, 듀란_X, 듀란_Y);
+  const 듀란타임라인 = buildDuranTimeline({ 환경이름, 패이름 });
   const 듀란레이어 = renderSingleImageSequence({
-    타임라인: 듀란타임라인,
-    x: 듀란_X,
-    y: 듀란_Y,
+    타임라인: 듀란타임라인.items,
     width: 듀란_가로,
     height: 듀란_세로
   });
@@ -283,7 +407,7 @@ function renderSceneSvg({ 환경이름, 패이름, 선택환경파일, 모바일
   preserveAspectRatio="xMidYMid meet"
 >
   <title>Duran Scene</title>
-  <desc>환경=${escapeXml(환경이름)} / 선택환경파일=${escapeXml(선택환경파일)} / 카드=${escapeXml(패이름)} / 표시=${표시모드}</desc>
+  <desc>환경=${escapeXml(환경이름)} / 선택환경파일=${escapeXml(선택환경파일)} / 카드=${escapeXml(패이름)} / 표시=${표시모드} / 듀란=${escapeXml(듀란타임라인.description)}</desc>
 
   <defs>
     ${renderDefs({ 환경이름 })}
@@ -970,49 +1094,204 @@ function renderCardImage({ 패이름, x, y, width, height }) {
   </image>`;
 }
 
-function buildTimeline(시퀀스, 시작X = 0, 시작Y = 0) {
-  const 정렬된시퀀스 = [...시퀀스].sort((a, b) => {
-    const ao = Number(a.순서) || 0;
-    const bo = Number(b.순서) || 0;
-    return ao - bo;
-  });
-
+function buildDuranTimeline({ 환경이름, 패이름 }) {
+  const items = [];
   let t = 0;
-  let 현재X = 시작X;
-  let 현재Y = 시작Y;
+  let x = 듀란_X;
+  let y = 듀란_Y;
 
-  return 정렬된시퀀스.map((단계, index) => {
-    const 지속 = Math.max(0, Number(단계.지속) || 0);
-    const 이동X = Number(단계.이동X) || 0;
-    const 이동Y = Number(단계.이동Y) || 0;
-    const 고정 = !!단계.고정;
+  for (const clip of 듀란_시작프리셋) {
+    const item = createDuranTimelineItem({
+      clip,
+      start: t,
+      x,
+      y,
+      dx: 0,
+      dy: 0,
+      fixed: false,
+      looped: false
+    });
+    items.push(item);
+    t = item.종료;
+  }
 
-    const 시작 = t;
-    const 종료 = 고정 ? null : t + 지속;
-
-    const item = {
-      index,
-      순서: Number(단계.순서) || index + 1,
-      폴더: 단계.폴더,
-      파일: 단계.파일,
-      시작,
-      종료,
-      지속,
-      고정,
-      x: 현재X,
-      y: 현재Y,
-      종료X: 현재X + 이동X,
-      종료Y: 현재Y + 이동Y,
-      이동X,
-      이동Y
-    };
-
-    현재X += 이동X;
-    현재Y += 이동Y;
-    t += 지속;
-
-    return item;
+  const plan = buildDuranActionPlan({ 환경이름, 패이름 });
+  const afterPreset = buildDuranActionItems({
+    actions: plan.actions,
+    looped: plan.loop,
+    start: t,
+    x,
+    y
   });
+
+  items.push(...afterPreset.items);
+
+  return {
+    items,
+    loop: plan.loop,
+    description: `${plan.loop ? "루프" : "종결"}:${plan.actions.map((action) => action.이름).join(" > ")}`
+  };
+}
+
+function buildDuranActionPlan({ 환경이름, 패이름 }) {
+  const pool = getDuranActionPool(환경이름, 패이름);
+  const terminalName = maybePickTerminalAction(pool);
+
+  if (terminalName) {
+    const leadAction = randomPickUnique(pool.제자리, 1)[0] || "경계";
+    return {
+      loop: false,
+      actions: [
+        createStationaryAction(leadAction),
+        createTerminalAction(terminalName)
+      ]
+    };
+  }
+
+  const actions = [];
+  const shouldMove = Math.random() < pool.이동확률 && pool.이동.length > 0;
+
+  if (shouldMove) {
+    actions.push(createMovementAction(randomPick(pool.이동)));
+  }
+
+  const stationaryCount = shouldMove ? 1 + randomInt(0, 1) : 2;
+  for (const name of randomPickUnique(pool.제자리, stationaryCount)) {
+    actions.push(createStationaryAction(name));
+  }
+
+  const currentDx = actions.reduce((sum, action) => sum + (Number(action.이동X) || 0), 0);
+  const currentDy = actions.reduce((sum, action) => sum + (Number(action.이동Y) || 0), 0);
+
+  if (Math.abs(currentDx) >= 듀란_복귀_최소_거리 || Math.abs(currentDy) >= 듀란_복귀_최소_거리) {
+    actions.push(createReturnAction({ currentDx, currentDy }));
+  }
+
+  const loopName = randomPick(pool.반복.length > 0 ? pool.반복 : pool.제자리);
+  actions.push(createStationaryAction(loopName || "기본"));
+
+  return { loop: true, actions };
+}
+
+function buildDuranActionItems({ actions, looped, start, x, y }) {
+  const items = [];
+  let t = start;
+  let currentX = x;
+  let currentY = y;
+
+  for (const action of actions) {
+    const item = createDuranTimelineItem({
+      clip: action,
+      start: t,
+      x: currentX,
+      y: currentY,
+      dx: action.이동X || 0,
+      dy: action.이동Y || 0,
+      fixed: action.고정 || (!looped && action.이후행동없음),
+      looped
+    });
+
+    items.push(item);
+    currentX = item.종료X;
+    currentY = item.종료Y;
+    t = item.종료 ?? t;
+
+    if (action.이후행동없음) {
+      break;
+    }
+  }
+
+  if (looped) {
+    const loopDuration = Math.max(듀란_최소_루프_초, t - start);
+    for (const item of items) {
+      item.루프시작 = start;
+      item.루프길이 = loopDuration;
+    }
+  }
+
+  return { items, 종료X: currentX, 종료Y: currentY, 종료: t };
+}
+
+function createDuranTimelineItem({ clip, start, x, y, dx, dy, fixed, looped }) {
+  const duration = Math.max(0, Number(clip.지속) || 0);
+  const end = fixed ? null : start + duration;
+
+  return {
+    이름: clip.이름,
+    분류: clip.분류,
+    폴더: 듀란_폴더명,
+    동작폴더: clip.폴더,
+    파일: clip.파일,
+    시작: start,
+    종료: end,
+    지속: duration,
+    고정: !!fixed,
+    반복: !!looped,
+    x,
+    y,
+    종료X: x + dx,
+    종료Y: y + dy,
+    이동X: dx,
+    이동Y: dy,
+    좌우반전: clip.분류 === "이동" && dx < 0
+  };
+}
+
+function getDuranActionPool(환경이름, 패이름) {
+  const envPool = 듀란_환경별_행동풀[환경이름] || 듀란_환경별_행동풀.default;
+  const cardMod = 듀란_패별_행동보정[패이름] || 듀란_패별_행동보정.default;
+
+  return {
+    이동: mergeActionNames(envPool.이동, cardMod.추가이동),
+    제자리: mergeActionNames(envPool.제자리, cardMod.추가제자리),
+    종결: mergeActionNames(envPool.종결, cardMod.추가종결),
+    반복: mergeActionNames(cardMod.반복, envPool.반복),
+    이동확률: clamp01((envPool.이동확률 ?? 0.5) + (cardMod.이동확률보정 || 0)),
+    종결확률: clamp01((envPool.종결확률 || 0) + (cardMod.종결확률보정 || 0))
+  };
+}
+
+function mergeActionNames(...lists) {
+  return [...new Set(lists.flat().filter(Boolean))];
+}
+
+function maybePickTerminalAction(pool) {
+  if (!pool.종결 || pool.종결.length === 0) return null;
+  if (Math.random() >= pool.종결확률) return null;
+  return randomPick(pool.종결);
+}
+
+function createMovementAction(name) {
+  const clip = 듀란_이동행동[name] || 듀란_이동행동.걷기;
+  const direction = Math.random() < 0.5 ? -1 : 1;
+
+  return {
+    ...clip,
+    이동X: clip.이동거리 * direction,
+    이동Y: 0
+  };
+}
+
+function createStationaryAction(name) {
+  return { ...(듀란_제자리행동[name] || 듀란_제자리행동.경계), 이동X: 0, 이동Y: 0 };
+}
+
+function createTerminalAction(name) {
+  return { ...(듀란_종결행동[name] || 듀란_종결행동.충격주저앉음), 이동X: 0, 이동Y: 0 };
+}
+
+function createReturnAction({ currentDx, currentDy }) {
+  const distance = Math.max(Math.abs(currentDx), Math.abs(currentDy));
+  const clip = distance > 58 ? 듀란_이동행동.달리기 : 듀란_이동행동.걷기;
+  const duration = clip === 듀란_이동행동.달리기 ? 1.35 : 2.0;
+
+  return {
+    ...clip,
+    이름: `${clip.이름}복귀`,
+    지속: duration,
+    이동X: -currentDx,
+    이동Y: -currentDy
+  };
 }
 
 function renderSingleImageSequence({ 타임라인, width, height }) {
@@ -1021,29 +1300,15 @@ function renderSingleImageSequence({ 타임라인, width, height }) {
   }
 
   return 타임라인.map((item) => {
-    const href = assetUrl(item.폴더, item.파일);
-    const defaultDisplay = item.시작 === 0 ? "inline" : "none";
-
-    let displayAnim = "";
-
-    if (item.시작 > 0) {
-      displayAnim += `<set attributeName="display" to="inline" begin="${fmt(item.시작)}s" fill="freeze" />\n    `;
-    }
-
-    if (item.종료 !== null) {
-      displayAnim += `<set attributeName="display" to="none" begin="${fmt(item.종료)}s" fill="freeze" />\n    `;
-    }
-
-    let moveAnimX = "";
-    let moveAnimY = "";
-    if (item.지속 > 0) {
-      if (item.이동X !== 0) {
-        moveAnimX = `<animate attributeName="x" from="${fmt(item.x)}" to="${fmt(item.종료X)}" begin="${fmt(item.시작)}s" dur="${fmt(item.지속)}s" fill="freeze" />\n    `;
-      }
-      if (item.이동Y !== 0) {
-        moveAnimY = `<animate attributeName="y" from="${fmt(item.y)}" to="${fmt(item.종료Y)}" begin="${fmt(item.시작)}s" dur="${fmt(item.지속)}s" fill="freeze" />\n    `;
-      }
-    }
+    const href = timelineItemUrl(item);
+    const initialTransform = makeDuranTranslate(item.x, item.y);
+    const flipTransform = makeDuranFlipTransform(item.좌우반전, width);
+    const displayAnimation = item.반복
+      ? renderLoopVisibilityAnimation(item)
+      : renderOneShotDisplayAnimation(item);
+    const translateAnimation = item.반복
+      ? renderLoopTransformAnimation(item, width)
+      : renderOneShotTransformAnimation(item, width);
 
     const transitionEffect = renderDuranImageTransitionEffects({
       item,
@@ -1053,18 +1318,138 @@ function renderSingleImageSequence({ 타임라인, width, height }) {
     });
 
     return `
-  <image
-    href="${escapeXml(href)}"
-    x="${fmt(item.x)}"
-    y="${fmt(item.y)}"
-    width="${width}"
-    height="${height}"
-    display="${defaultDisplay}"
-    preserveAspectRatio="none"
+  <g
+    transform="${escapeXml(initialTransform)}"
+    ${item.반복 ? 'opacity="0"' : `display="${item.시작 === 0 ? "inline" : "none"}"`}
   >
-    ${displayAnim}${moveAnimX}${moveAnimY}
-  </image>${transitionEffect}`;
+    ${displayAnimation}${translateAnimation}
+    <g transform="${escapeXml(flipTransform)}">
+      <image
+        href="${escapeXml(href)}"
+        x="0"
+        y="0"
+        width="${width}"
+        height="${height}"
+        preserveAspectRatio="none"
+      />
+    </g>
+  </g>${transitionEffect}`;
   }).join("");
+}
+
+function renderOneShotDisplayAnimation(item) {
+  let animation = "";
+
+  if (item.시작 > 0) {
+    animation += `<set attributeName="display" to="inline" begin="${fmt(item.시작)}s" fill="freeze" />\n    `;
+  }
+
+  if (item.종료 !== null) {
+    animation += `<set attributeName="display" to="none" begin="${fmt(item.종료)}s" fill="freeze" />\n    `;
+  }
+
+  return animation;
+}
+
+function renderOneShotTransformAnimation(item, width) {
+  if (!item.지속 || item.지속 <= 0 || (item.이동X === 0 && item.이동Y === 0)) {
+    return "";
+  }
+
+  return `<animateTransform
+      attributeName="transform"
+      type="translate"
+      from="${escapeXml(makeDuranTranslateValue(item.x, item.y))}"
+      to="${escapeXml(makeDuranTranslateValue(item.종료X, item.종료Y))}"
+      begin="${fmt(item.시작)}s"
+      dur="${fmt(item.지속)}s"
+      fill="freeze"
+    />\n    `;
+}
+
+function renderLoopVisibilityAnimation(item) {
+  const times = makeLoopKeyTimes(item);
+
+  return `<animate
+      attributeName="opacity"
+      values="${times.opacityValues}"
+      keyTimes="${times.keyTimes}"
+      calcMode="discrete"
+      begin="${fmt(item.루프시작)}s"
+      dur="${fmt(item.루프길이)}s"
+      repeatCount="indefinite"
+    />\n    `;
+}
+
+function renderLoopTransformAnimation(item, width) {
+  const times = makeLoopKeyTimes(item);
+  const startTransform = makeDuranTranslateValue(item.x, item.y);
+  const endTransform = makeDuranTranslateValue(item.종료X, item.종료Y);
+  const values = makeLoopValues({
+    startValue: startTransform,
+    endValue: endTransform,
+    startAtZero: times.startAtZero,
+    endAtOne: times.endAtOne
+  });
+
+  return `<animateTransform
+      attributeName="transform"
+      type="translate"
+      values="${escapeXml(values)}"
+      keyTimes="${times.keyTimes}"
+      begin="${fmt(item.루프시작)}s"
+      dur="${fmt(item.루프길이)}s"
+      repeatCount="indefinite"
+    />\n    `;
+}
+
+function makeLoopKeyTimes(item) {
+  const startOffset = clamp01((item.시작 - item.루프시작) / item.루프길이);
+  const endOffset = clamp01(((item.종료 ?? item.시작 + item.지속) - item.루프시작) / item.루프길이);
+  const startAtZero = startOffset <= 0;
+  const endAtOne = endOffset >= 1;
+
+  if (startAtZero && endAtOne) {
+    return { keyTimes: "0;1", opacityValues: "1;1", startAtZero, endAtOne };
+  }
+
+  if (startAtZero) {
+    return { keyTimes: `0;${fmt(endOffset)};1`, opacityValues: "1;0;0", startAtZero, endAtOne };
+  }
+
+  if (endAtOne) {
+    return { keyTimes: `0;${fmt(startOffset)};1`, opacityValues: "0;1;1", startAtZero, endAtOne };
+  }
+
+  return {
+    keyTimes: `0;${fmt(startOffset)};${fmt(endOffset)};1`,
+    opacityValues: "0;1;0;0",
+    startAtZero,
+    endAtOne
+  };
+}
+
+function makeLoopValues({ startValue, endValue, startAtZero, endAtOne }) {
+  if (startAtZero && endAtOne) return `${startValue};${endValue}`;
+  if (startAtZero) return `${startValue};${endValue};${endValue}`;
+  if (endAtOne) return `${startValue};${startValue};${endValue}`;
+  return `${startValue};${startValue};${endValue};${endValue}`;
+}
+
+function makeDuranTranslate(x, y) {
+  return `translate(${makeDuranTranslateValue(x, y)})`;
+}
+
+function makeDuranTranslateValue(x, y) {
+  return `${fmt(x)} ${fmt(y)}`;
+}
+
+function makeDuranFlipTransform(flipX, width) {
+  if (flipX) {
+    return `translate(${fmt(width)} 0) scale(-1 1)`;
+  }
+
+  return "";
 }
 
 function renderDuranImageTransitionEffects({ item, href, width, height }) {
@@ -1346,6 +1731,23 @@ function randomPick(arr) {
   return arr[idx];
 }
 
+function randomInt(min, max) {
+  return min + Math.floor(Math.random() * (max - min + 1));
+}
+
+function randomPickUnique(arr, count) {
+  const pool = [...new Set((arr || []).filter(Boolean))];
+  const picked = [];
+  const limit = Math.min(count, pool.length);
+
+  while (picked.length < limit) {
+    const idx = Math.floor(Math.random() * pool.length);
+    picked.push(pool.splice(idx, 1)[0]);
+  }
+
+  return picked;
+}
+
 function naturalCompare(a, b) {
   return String(a).localeCompare(String(b), "ko", {
     numeric: true,
@@ -1359,6 +1761,18 @@ function encodePath(parts) {
 
 function assetUrl(folder, file) {
   return `${BASE_URL}/${encodeURIComponent(folder)}/${encodeURIComponent(file)}`;
+}
+
+function duranAssetUrl(actionFolder, file) {
+  return `${BASE_URL}/${encodeURIComponent(듀란_폴더명)}/${encodeURIComponent(actionFolder)}/${encodeURIComponent(file)}`;
+}
+
+function timelineItemUrl(item) {
+  if (item.폴더 === 듀란_폴더명) {
+    return duranAssetUrl(item.동작폴더, item.파일);
+  }
+
+  return assetUrl(item.폴더, item.파일);
 }
 
 function safeText(value, fallback = "", maxLen = 50) {
@@ -1406,7 +1820,9 @@ function getHelpText() {
     "  - 환경: 환경정지/기본.webp -> 환경/{선택환경파일}.webp -> 환경반복/{선택환경파일}.webp",
     "  - 패: 환경반복 시작과 동시에 패/{패}.webp 표시 후 계속 유지",
     "  - 효과: 패 등장 시 소환 파문/접지 그림자/짧은 반짝임, 이후 환경별 약한 잔향 유지",
-    "  - 듀란: 기본 4초 -> 놀람 3.5초 -> 기본 고정",
+    "  - 듀란: 기본 4초 -> 놀람 3.5초 고정 후 환경/패별 이동·제자리 행동을 랜덤 루프로 조합",
+    "  - 이동 행동이 왼쪽으로 갈 때는 원본 오른쪽 방향 애니메이션을 좌우 반전",
+    "  - 종결 행동(현재: 충격주저앉음)이 선택되면 이후 행동 없이 해당 상태로 고정",
     "  - 데스크탑은 원본 700x559 표시",
     "  - 모바일은 중앙 기준 559x559로 크롭 표시",
     "",
@@ -1415,6 +1831,7 @@ function getHelpText() {
     "  - visual/환경/{선택환경파일}.webp",
     "  - visual/환경반복/{선택환경파일}.webp",
     "  - visual/패/{패}.webp",
+    "  - visual/D/{듀란동작폴더}/{듀란동작파일}.webp",
     "",
     "원본 기준:",
     "  - 환경/패: 700x559",
