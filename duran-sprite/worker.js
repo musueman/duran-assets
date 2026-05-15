@@ -139,7 +139,6 @@ const 환경_효과테마 = {
 };
 
 const 듀란_루프_시작_초 = 7.5;
-const 듀란_최소_루프_초 = 8.0;
 const 듀란_복귀_최소_거리 = 1;
 
 const 듀란_시작프리셋 = [
@@ -1203,7 +1202,7 @@ function buildDuranActionItems({ actions, looped, start, x, y }) {
   }
 
   if (looped) {
-    const loopDuration = Math.max(듀란_최소_루프_초, t - start);
+    const loopDuration = Math.max(0.001, t - start);
     for (const item of items) {
       item.루프시작 = start;
       item.루프길이 = loopDuration;
