@@ -1,0 +1,7 @@
+name = "duran-chronicle-homepage"
+main = "worker.js"
+compatibility_date = "2026-05-15"
+
+[assets]
+directory = "./assets"
+binding = "ASSETS"
