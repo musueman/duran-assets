@@ -1301,11 +1301,12 @@ function renderSingleImageSequence({ 타임라인, width, height }) {
 
   return 타임라인.map((item) => {
     const href = timelineItemUrl(item);
-    const initialTransform = makeDuranTransform(item.x, item.y, item.좌우반전, width);
+    const initialTransform = makeDuranTranslate(item.x, item.y);
+    const flipTransform = makeDuranFlipTransform(item.좌우반전, width);
     const displayAnimation = item.반복
       ? renderLoopVisibilityAnimation(item)
       : renderOneShotDisplayAnimation(item);
-    const transformAnimation = item.반복
+    const translateAnimation = item.반복
       ? renderLoopTransformAnimation(item, width)
       : renderOneShotTransformAnimation(item, width);
 
@@ -1321,15 +1322,17 @@ function renderSingleImageSequence({ 타임라인, width, height }) {
     transform="${escapeXml(initialTransform)}"
     ${item.반복 ? 'opacity="0"' : `display="${item.시작 === 0 ? "inline" : "none"}"`}
   >
-    ${displayAnimation}${transformAnimation}
-    <image
-      href="${escapeXml(href)}"
-      x="0"
-      y="0"
-      width="${width}"
-      height="${height}"
-      preserveAspectRatio="none"
-    />
+    ${displayAnimation}${translateAnimation}
+    <g transform="${escapeXml(flipTransform)}">
+      <image
+        href="${escapeXml(href)}"
+        x="0"
+        y="0"
+        width="${width}"
+        height="${height}"
+        preserveAspectRatio="none"
+      />
+    </g>
   </g>${transitionEffect}`;
   }).join("");
 }
@@ -1353,10 +1356,11 @@ function renderOneShotTransformAnimation(item, width) {
     return "";
   }
 
-  return `<animate
+  return `<animateTransform
       attributeName="transform"
-      from="${escapeXml(makeDuranTransform(item.x, item.y, item.좌우반전, width))}"
-      to="${escapeXml(makeDuranTransform(item.종료X, item.종료Y, item.좌우반전, width))}"
+      type="translate"
+      from="${escapeXml(makeDuranTranslateValue(item.x, item.y))}"
+      to="${escapeXml(makeDuranTranslateValue(item.종료X, item.종료Y))}"
       begin="${fmt(item.시작)}s"
       dur="${fmt(item.지속)}s"
       fill="freeze"
@@ -1379,8 +1383,8 @@ function renderLoopVisibilityAnimation(item) {
 
 function renderLoopTransformAnimation(item, width) {
   const times = makeLoopKeyTimes(item);
-  const startTransform = makeDuranTransform(item.x, item.y, item.좌우반전, width);
-  const endTransform = makeDuranTransform(item.종료X, item.종료Y, item.좌우반전, width);
+  const startTransform = makeDuranTranslateValue(item.x, item.y);
+  const endTransform = makeDuranTranslateValue(item.종료X, item.종료Y);
   const values = makeLoopValues({
     startValue: startTransform,
     endValue: endTransform,
@@ -1388,8 +1392,9 @@ function renderLoopTransformAnimation(item, width) {
     endAtOne: times.endAtOne
   });
 
-  return `<animate
+  return `<animateTransform
       attributeName="transform"
+      type="translate"
       values="${escapeXml(values)}"
       keyTimes="${times.keyTimes}"
       begin="${fmt(item.루프시작)}s"
@@ -1409,7 +1414,7 @@ function makeLoopKeyTimes(item) {
   }
 
   if (startAtZero) {
-    return { keyTimes: `0;${fmt(endOffset)};1`, opacityValues: "1;1;0", startAtZero, endAtOne };
+    return { keyTimes: `0;${fmt(endOffset)};1`, opacityValues: "1;0;0", startAtZero, endAtOne };
   }
 
   if (endAtOne) {
@@ -1418,7 +1423,7 @@ function makeLoopKeyTimes(item) {
 
   return {
     keyTimes: `0;${fmt(startOffset)};${fmt(endOffset)};1`,
-    opacityValues: "0;1;1;0",
+    opacityValues: "0;1;0;0",
     startAtZero,
     endAtOne
   };
@@ -1431,12 +1436,20 @@ function makeLoopValues({ startValue, endValue, startAtZero, endAtOne }) {
   return `${startValue};${startValue};${endValue};${endValue}`;
 }
 
-function makeDuranTransform(x, y, flipX, width) {
+function makeDuranTranslate(x, y) {
+  return `translate(${makeDuranTranslateValue(x, y)})`;
+}
+
+function makeDuranTranslateValue(x, y) {
+  return `${fmt(x)} ${fmt(y)}`;
+}
+
+function makeDuranFlipTransform(flipX, width) {
   if (flipX) {
-    return `translate(${fmt(x + width)} ${fmt(y)}) scale(-1 1)`;
+    return `translate(${fmt(width)} 0) scale(-1 1)`;
   }
 
-  return `translate(${fmt(x)} ${fmt(y)})`;
+  return "";
 }
 
 function renderDuranImageTransitionEffects({ item, href, width, height }) {
