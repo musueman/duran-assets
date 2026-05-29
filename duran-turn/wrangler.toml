@@ -1,0 +1,46 @@
+name = "duran-turn-dev"
+main = "worker.js"
+compatibility_date = "2026-05-29"
+
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+[vars]
+STAGE = "dev"
+
+[[services]]
+binding = "DICE"
+service = "dice-dev"
+
+[[services]]
+binding = "SPRITE"
+service = "duran-sprite-dev"
+
+[env.dev]
+name = "duran-turn-dev"
+
+[env.dev.vars]
+STAGE = "dev"
+
+[[env.dev.services]]
+binding = "DICE"
+service = "dice-dev"
+
+[[env.dev.services]]
+binding = "SPRITE"
+service = "duran-sprite-dev"
+
+[env.prod]
+name = "duran-turn"
+
+[env.prod.vars]
+STAGE = "prod"
+
+[[env.prod.services]]
+binding = "DICE"
+service = "dice"
+
+[[env.prod.services]]
+binding = "SPRITE"
+service = "duran-sprite"

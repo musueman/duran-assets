@@ -1,6 +1,10 @@
 name = "duran-chronicle-homepage"
 main = "worker.js"
-compatibility_date = "2026-05-15"
+compatibility_date = "2026-05-29"
+
+[observability]
+enabled = true
+head_sampling_rate = 1
 
 [assets]
 directory = "./assets"

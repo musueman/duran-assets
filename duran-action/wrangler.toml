@@ -1,4 +1,4 @@
-name = "duran-sprite-dev"
+name = "duran-action-dev"
 main = "worker.js"
 compatibility_date = "2026-05-29"
 
@@ -10,13 +10,13 @@ head_sampling_rate = 1
 STAGE = "dev"
 
 [env.dev]
-name = "duran-sprite-dev"
+name = "duran-action-dev"
 
 [env.dev.vars]
 STAGE = "dev"
 
 [env.prod]
-name = "duran-sprite"
+name = "duran-action"
 
 [env.prod.vars]
 STAGE = "prod"

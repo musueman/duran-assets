@@ -711,7 +711,19 @@ function htmlResponse(html, status = 200) {
 }
 
 function svgResponse(svg, status = 200) {
-  return new Response(svg, { status, headers: SVG_HEADERS });
+  return new Response(compactSvg(svg), { status, headers: SVG_HEADERS });
+}
+
+function compactSvg(svg) {
+  return String(svg || "")
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/<[^>]+>/g, (tag) => tag
+      .replace(/\s+/g, " ")
+      .replace(/\s*=\s*/g, "=")
+      .replace(/\s+\/>/g, "/>")
+      .replace(/\s+>/g, ">"))
+    .replace(/>\s+</g, "><")
+    .trim();
 }
 
 function jsonResponse(data, status = 200) {

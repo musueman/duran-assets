@@ -13,15 +13,40 @@ const 환경반복_폴더명 = "환경반복";
 const 패_폴더명 = "패";
 
 const 듀란_폴더명 = "D";
+const 보보_폴더명 = "캐릭터/000_보보";
 
 const 원본_가로 = 700;
 const 원본_세로 = 559;
 
 const 듀란_가로 = 230;
 const 듀란_세로 = 230;
+const 보보_가로 = 듀란_가로 / 2;
+const 보보_세로 = 듀란_세로 / 2;
 
 const 듀란_X = 235;
 const 듀란_Y = 319;
+const 보보_시작_지연_초 = 0.3;
+const 보보_Y_추가오프셋 = 30;
+const 보보_PC_배율 = 1.5;
+const 보보_모바일_배율 = 보보_PC_배율 * 1.5;
+const 보보_무대_여백_X = 44;
+const 보보_랜덤_이동확률 = 0.26;
+const 보보_랜덤_최소이동 = 24;
+const 보보_랜덤_최대이동 = 52;
+const 보보_순찰_최대스텝 = 64;
+const 보보_순찰_최소폭 = 180;
+const 보보_순찰_최대폭 = 300;
+const 보보_마주침_X거리 = 86;
+const 보보_올려보기_최소_X거리 = 56;
+const 보보_마주침_Y거리 = 62;
+const 보보_올려보기_쿨다운 = 4;
+const 보보_올려보기_확률 = 0.5;
+const 보보_이동중_올려보기_확률 = 0.4;
+const 보보_스프라이트_원본크기 = 300;
+const 보보_앵커_원본_X = 137.5;
+const 보보_앵커_원본_Y = 252;
+const 보보_반전중심_X비율 = 보보_앵커_원본_X / 보보_스프라이트_원본크기;
+const 모바일_캐릭터_배율 = 1.5;
 
 const 모바일_크롭_크기 = 559;
 const 모바일_크롭_X = (원본_가로 - 모바일_크롭_크기) / 2;
@@ -140,6 +165,7 @@ const 환경_효과테마 = {
 
 const 듀란_루프_시작_초 = 7.5;
 const 듀란_복귀_최소_거리 = 1;
+const 듀란_행동_기본_지속_초 = 2.0;
 
 const 듀란_시작프리셋 = [
   { 이름: "기본", 분류: "시작", 폴더: "기본", 파일: "기본.webp", 지속: 4.0 },
@@ -147,13 +173,54 @@ const 듀란_시작프리셋 = [
 ];
 
 const 듀란_이동행동 = {
-  걷기: { 이름: "걷기", 분류: "이동", 폴더: "걷기", 파일: "걷기.webp", 지속: 2.4, 이동거리: 84 },
-  달리기: { 이름: "달리기", 분류: "이동", 폴더: "달리기", 파일: "달리기.webp", 지속: 1.45, 이동거리: 148 }
+  걷기: { 이름: "걷기", 분류: "이동", 폴더: "걷기", 파일: "걷기.webp", 지속: 듀란_행동_기본_지속_초, 이동거리: 84 },
+  달리기: { 이름: "달리기", 분류: "이동", 폴더: "달리기", 파일: "달리기.webp", 지속: 듀란_행동_기본_지속_초, 이동거리: 148 }
+};
+
+const 보보_동작파일 = {
+  기본: {
+    폴더: "기본",
+    파일목록: ["기본킁킁a.webp", "기본킁킁d.webp", "기본킁킁f.webp"]
+  },
+  걷기: {
+    폴더: "걷기",
+    파일목록: ["걷기.webp"]
+  },
+  뛰기: {
+    폴더: "뛰기",
+    파일목록: ["뛰기.webp"]
+  },
+  올려보기: {
+    폴더: "올려보기",
+    파일목록: ["올려보기a.webp", "올려보기d.webp", "올려보기s.webp"]
+  },
+  줍기: {
+    폴더: "줍기",
+    파일목록: [
+      "줍기a.webp",
+      "줍기d.webp",
+      "줍기f.webp",
+      "줍기g.webp",
+      "줍기h.webp",
+      "줍기j.webp",
+      "줍기k.webp",
+      "줍기l.webp",
+      "줍기s.webp"
+    ]
+  }
+};
+
+const 보보_스프라이트_바운딩 = {
+  기본: { x: 40, y: 38, width: 195, height: 214 },
+  올려보기: { x: 40, y: 38, width: 195, height: 214 },
+  줍기: { x: 40, y: 38, width: 195, height: 214 },
+  걷기: { x: 22, y: 38, width: 212, height: 219 },
+  뛰기: { x: 22, y: 38, width: 212, height: 219 }
 };
 
 const 듀란_제자리행동 = makeDuranActionMap([
   makeDuranAction("기본", "기본", "기본.webp", 2.0, "대기", ["중립"], ["범용", "평온", "정비"]),
-  makeDuranAction("기본1", "기본", "기본1.webp", 1.9, "대기", ["중립"], ["범용", "평온", "정비"]),
+  makeDuranAction("기본1", "기본", "기본1.webp", 2.0, "대기", ["중립"], ["범용", "평온", "정비"]),
   ...makeDuranActionVariants("기본", "기본", 3, 8, 1.8, "대기", ["중립"], ["범용", "평온", "정비"]),
 
   makeDuranAction("경계", "경계", "경계.webp", 1.5, "대기", ["경계"], ["범용", "긴장", "위험", "불안", "낯섦"]),
@@ -352,7 +419,9 @@ const TEXT_HEADERS = {
   "pragma": "no-cache",
   "expires": "0",
   "x-content-type-options": "nosniff",
-  "access-control-allow-origin": "*"
+  "access-control-allow-origin": "*",
+  "access-control-allow-methods": "GET, HEAD, OPTIONS",
+  "access-control-allow-headers": "content-type"
 };
 
 const SVG_HEADERS = {
@@ -361,7 +430,9 @@ const SVG_HEADERS = {
   "pragma": "no-cache",
   "expires": "0",
   "x-content-type-options": "nosniff",
-  "access-control-allow-origin": "*"
+  "access-control-allow-origin": "*",
+  "access-control-allow-methods": "GET, HEAD, OPTIONS",
+  "access-control-allow-headers": "content-type"
 };
 
 let 환경파일목록_캐시 = null;
@@ -369,15 +440,41 @@ let 환경파일목록_가져온시각 = 0;
 const 환경파일목록_캐시시간 = 5 * 60 * 1000;
 
 export default {
-  async fetch(request) {
+  async fetch(request, env = {}) {
     const url = new URL(request.url);
 
+    if (request.method === "OPTIONS") {
+      return new Response(null, { status: 204, headers: TEXT_HEADERS });
+    }
+
+    if (!["GET", "HEAD"].includes(request.method)) {
+      return new Response("Method Not Allowed", {
+        status: 405,
+        headers: { ...TEXT_HEADERS, allow: "GET, HEAD, OPTIONS" }
+      });
+    }
+
+    if (url.pathname === "/dchat.svg") {
+      const dchatUrl = new URL(`${getDchatBaseUrl(url, env)}/chat.svg`);
+      for (const [key, value] of url.searchParams) {
+        dchatUrl.searchParams.append(key, value);
+      }
+
+      return new Response(null, {
+        status: 302,
+        headers: {
+          ...TEXT_HEADERS,
+          location: dchatUrl.toString()
+        }
+      });
+    }
+
     if (url.pathname === "/" || url.pathname === "") {
-      return new Response(getHelpText(), { headers: TEXT_HEADERS });
+      return new Response(request.method === "HEAD" ? null : getHelpText(), { headers: TEXT_HEADERS });
     }
 
     if (url.pathname !== "/scene.svg" && url.pathname !== "/duran.svg") {
-      return new Response("Not Found", { status: 404, headers: TEXT_HEADERS });
+      return new Response(request.method === "HEAD" ? null : "Not Found", { status: 404, headers: TEXT_HEADERS });
     }
 
     const p = url.searchParams;
@@ -399,8 +496,7 @@ export default {
       감정입력: safeText(p.get("감정") || p.get("정서") || "", "", 80)
     });
 
-    const userAgent = request.headers.get("user-agent") || "";
-    const 모바일여부 = isMobileUserAgent(userAgent);
+    const 모바일여부 = isMobileRequest(request, p);
 
     const 선택환경파일 = await pickRandomEnvironmentFile(환경이름);
 
@@ -412,9 +508,33 @@ export default {
       모바일여부
     });
 
-    return new Response(svg, { headers: SVG_HEADERS });
+    return new Response(request.method === "HEAD" ? null : compactSvg(svg), { headers: SVG_HEADERS });
   }
 };
+
+function getDchatBaseUrl(url, env = {}) {
+  const explicit = normalizeToken(url.searchParams.get("stage") || url.searchParams.get("환경구분") || "");
+  if (["prod", "production", "main"].includes(explicit)) return "https://dchat.musueman.workers.dev";
+  if (["dev", "test", "staging"].includes(explicit)) return "https://dchat-dev.musueman.workers.dev";
+
+  const envStage = normalizeToken(env?.STAGE || "");
+  if (envStage === "prod") return "https://dchat.musueman.workers.dev";
+  if (envStage === "dev") return "https://dchat-dev.musueman.workers.dev";
+
+  return url.hostname.includes("-dev.") ? "https://dchat-dev.musueman.workers.dev" : "https://dchat.musueman.workers.dev";
+}
+
+function compactSvg(svg) {
+  return String(svg || "")
+    .replace(/<!--[\s\S]*?-->/g, "")
+    .replace(/<[^>]+>/g, (tag) => tag
+      .replace(/\s+/g, " ")
+      .replace(/\s*=\s*/g, "=")
+      .replace(/\s+\/>/g, "/>")
+      .replace(/\s+>/g, ">"))
+    .replace(/>\s+</g, "><")
+    .trim();
+}
 
 function renderSceneSvg({ 환경이름, 패이름, 듀란상황, 선택환경파일, 모바일여부 }) {
   const 환경레이어 = renderEnvironmentImage({
@@ -437,11 +557,30 @@ function renderSceneSvg({ 환경이름, 패이름, 듀란상황, 선택환경파
     height: 원본_세로
   });
 
+  const 듀란배율 = 모바일여부 ? 모바일_캐릭터_배율 : 1;
+  const 보보배율 = 모바일여부 ? 보보_모바일_배율 : 보보_PC_배율;
+  const 듀란렌더가로 = 듀란_가로 * 듀란배율;
+  const 듀란렌더세로 = 듀란_세로 * 듀란배율;
+  const 보보렌더가로 = 보보_가로 * 보보배율;
+  const 보보렌더세로 = 보보_세로 * 보보배율;
   const 듀란타임라인 = buildDuranTimeline({ 환경이름, 패이름, 듀란상황 });
+  const 듀란렌더타임라인 = scaleTimelineItemsForRender({
+    items: 듀란타임라인.items,
+    baseWidth: 듀란_가로,
+    baseHeight: 듀란_세로,
+    renderWidth: 듀란렌더가로,
+    renderHeight: 듀란렌더세로
+  });
   const 듀란레이어 = renderSingleImageSequence({
-    타임라인: 듀란타임라인.items,
-    width: 듀란_가로,
-    height: 듀란_세로
+    타임라인: 듀란렌더타임라인,
+    width: 듀란렌더가로,
+    height: 듀란렌더세로
+  });
+  const 보보타임라인 = buildBoboIndependentTimeline(듀란렌더타임라인, { 듀란배율, 보보배율 });
+  const 보보레이어 = renderSingleImageSequence({
+    타임라인: 보보타임라인,
+    width: 보보렌더가로,
+    height: 보보렌더세로
   });
 
   const 듀란보정레이어 = renderDuranGroundingEffects({ 환경이름 });
@@ -504,6 +643,7 @@ function renderSceneSvg({ 환경이름, 패이름, 듀란상황, 선택환경파
   <g id="layer-duran" pointer-events="none">
     ${듀란보정레이어}
     ${듀란레이어}
+    ${보보레이어}
   </g>
 
   <g id="layer-front-atmosphere" pointer-events="none">
@@ -1189,6 +1329,277 @@ function buildDuranTimeline({ 환경이름, 패이름, 듀란상황 }) {
   };
 }
 
+function scaleTimelineItemsForRender({ items, baseWidth, baseHeight, renderWidth, renderHeight }) {
+  if (!Array.isArray(items) || (baseWidth === renderWidth && baseHeight === renderHeight)) {
+    return items;
+  }
+
+  const offsetX = (renderWidth - baseWidth) / 2;
+  const offsetY = renderHeight - baseHeight;
+
+  return items.map((item) => ({
+    ...item,
+    x: item.x - offsetX,
+    y: item.y - offsetY,
+    종료X: item.종료X - offsetX,
+    종료Y: item.종료Y - offsetY
+  }));
+}
+
+function buildBoboIndependentTimeline(duranItems, { 듀란배율 = 1, 보보배율 = 1 } = {}) {
+  if (!Array.isArray(duranItems) || duranItems.length === 0) {
+    return [];
+  }
+
+  const first = duranItems[0];
+  const 보보_Y_오프셋 = getBoboYOffset({ 듀란배율, 보보배율 });
+  const minX = 보보_무대_여백_X;
+  const maxX = 원본_가로 - (보보_가로 * 보보배율) - 보보_무대_여백_X;
+  const baseY = first.y + 보보_Y_오프셋;
+  const lastLoopIndex = getLastBoboLoopIndex(duranItems);
+  const requiredPickIndex = pickBoboRequiredPickIndex(duranItems, lastLoopIndex);
+  const patrolXByIndex = buildBoboPatrolXMap(duranItems, { minX, maxX });
+  const firstPatrolX = patrolXByIndex.size > 0 ? patrolXByIndex.values().next().value : null;
+  const items = [];
+  let currentX = firstPatrolX ?? getBoboInitialRandomX(first.x, minX, maxX);
+  let currentY = baseY;
+  let currentSide = getBoboRelativeSide(first.x, currentX, Math.random() < 0.5 ? -1 : 1);
+  let lookCooldown = 0;
+
+  for (const [index, item] of duranItems.entries()) {
+    const startX = currentX;
+    const startY = currentY;
+    let endX = startX;
+    let endY = startY;
+    let clip;
+    let renderSide = currentSide;
+
+    const forcePick = index === requiredPickIndex;
+    const isLoopItem = !!item.반복;
+    const patrolX = patrolXByIndex.get(index);
+    const patrolTarget = typeof patrolX === "number" ? { x: patrolX, y: baseY } : null;
+    const randomTarget = !isLoopItem && Math.random() < 보보_랜덤_이동확률
+      ? getBoboRandomMoveTarget({ x: startX, y: startY, minX, maxX })
+      : null;
+    const target = patrolTarget || randomTarget;
+    const meetingDuran = !forcePick && lookCooldown <= 0 && isBoboMeetingDuran(item, startX, startY, { 듀란배율, 보보배율 });
+    const shouldMove = !forcePick && !!target && Math.abs(target.x - startX) > 0.5;
+    const shouldLookUp = meetingDuran && Math.random() < (shouldMove ? 보보_이동중_올려보기_확률 : 보보_올려보기_확률);
+
+    if (forcePick) {
+      clip = pickBoboClipByKey("줍기");
+    } else if (shouldMove) {
+      if (shouldLookUp) {
+        clip = pickBoboClipByKey("올려보기");
+        renderSide = getBoboRelativeSide(item.x, startX, renderSide);
+        lookCooldown = 보보_올려보기_쿨다운;
+      } else {
+        endX = target.x;
+        endY = target.y;
+        renderSide = getBoboSideForDelta(endX - startX, currentSide);
+        clip = pickBoboMovementClip(endX - startX, endY - startY);
+      }
+    } else if (shouldLookUp) {
+      clip = pickBoboClipByKey("올려보기");
+      renderSide = getBoboRelativeSide(item.x, startX, currentSide);
+      lookCooldown = 보보_올려보기_쿨다운;
+    } else {
+      clip = pickBoboClipByKey("기본");
+    }
+
+    if (!shouldLookUp && lookCooldown > 0) {
+      lookCooldown -= 1;
+    }
+
+    const boboItem = createBoboTimelineItem({
+      source: item,
+      clip,
+      start: item.시작 + 보보_시작_지연_초,
+      end: item.종료 === null ? null : item.종료 + 보보_시작_지연_초,
+      x: startX,
+      y: startY,
+      endX,
+      endY,
+      side: renderSide
+    });
+
+    currentX = endX;
+    currentY = endY;
+    currentSide = renderSide;
+
+    items.push(boboItem);
+  }
+
+  return items;
+}
+
+function getBoboInitialRandomX(duranX, minX, maxX) {
+  const side = Math.random() < 0.5 ? -1 : 1;
+  const distance = randomBetween(118, 188);
+  return clamp(duranX + side * distance, minX, maxX);
+}
+
+function getBoboRandomMoveTarget({ x, y, minX, maxX }) {
+  const dx = randomSignedRange(보보_랜덤_최소이동, 보보_랜덤_최대이동);
+  let targetX = clamp(x + dx, minX, maxX);
+
+  if (Math.abs(targetX - x) < 보보_랜덤_최소이동 * 0.5) {
+    targetX = clamp(x - dx, minX, maxX);
+  }
+
+  return {
+    x: targetX,
+    y
+  };
+}
+
+function buildBoboPatrolXMap(duranItems, { minX, maxX }) {
+  const loopEntries = duranItems
+    .map((item, index) => ({ item, index }))
+    .filter(({ item }) => item?.반복);
+
+  if (loopEntries.length === 0) {
+    return new Map();
+  }
+
+  const loopCount = loopEntries.length;
+  const stageWidth = Math.max(0, maxX - minX);
+  const stepBoundSpan = Math.max(보보_순찰_최소폭, (Math.max(1, loopCount - 1) * 보보_순찰_최대스텝) / 2);
+  const span = Math.min(stageWidth, 보보_순찰_최대폭, stepBoundSpan);
+  const stageCenter = minX + stageWidth / 2;
+  const left = clamp(stageCenter - span / 2, minX, maxX - span);
+  const right = left + span;
+  const startsLeft = Math.random() < 0.5;
+  const result = new Map();
+
+  for (const [order, { index }] of loopEntries.entries()) {
+    const phase = loopCount <= 1 ? 0 : order / (loopCount - 1);
+    const pingPong = phase <= 0.5 ? phase * 2 : (1 - phase) * 2;
+    const x = startsLeft
+      ? left + span * pingPong
+      : right - span * pingPong;
+
+    result.set(index, x);
+  }
+
+  return result;
+}
+
+function getBoboYOffset({ 듀란배율 = 1, 보보배율 = 1 } = {}) {
+  return (듀란_세로 * 듀란배율) - (보보_세로 * 보보배율) + 보보_Y_추가오프셋;
+}
+
+function isBoboMeetingDuran(item, boboX, boboY, { 듀란배율 = 1, 보보배율 = 1 } = {}) {
+  const duranWidth = 듀란_가로 * 듀란배율;
+  const duranHeight = 듀란_세로 * 듀란배율;
+  const boboWidth = 보보_가로 * 보보배율;
+  const boboHeight = 보보_세로 * 보보배율;
+  const boboFootX = boboX + boboWidth / 2;
+  const boboFootY = boboY + boboHeight * 0.86;
+  const duranStartX = item.x + duranWidth / 2;
+  const duranEndX = item.종료X + duranWidth / 2;
+  const duranStartY = item.y + duranHeight * 0.92;
+  const duranEndY = item.종료Y + duranHeight * 0.92;
+  const minDuranX = Math.min(duranStartX, duranEndX);
+  const maxDuranX = Math.max(duranStartX, duranEndX);
+  const minDuranY = Math.min(duranStartY, duranEndY);
+  const maxDuranY = Math.max(duranStartY, duranEndY);
+  const nearestX = clamp(boboFootX, minDuranX, maxDuranX);
+  const nearestY = clamp(boboFootY, minDuranY, maxDuranY);
+  const distanceX = Math.abs(boboFootX - nearestX);
+
+  return (
+    distanceX >= 보보_올려보기_최소_X거리 &&
+    distanceX <= 보보_마주침_X거리 &&
+    Math.abs(boboFootY - nearestY) <= 보보_마주침_Y거리
+  );
+}
+
+function getBoboRelativeSide(duranX, boboX, fallback = 1) {
+  const diff = boboX - duranX;
+  if (Math.abs(diff) < 0.001) return fallback || 1;
+  return diff > 0 ? 1 : -1;
+}
+
+function getBoboSideForDelta(dx, fallback = 1) {
+  if (dx > 0.001) return -1;
+  if (dx < -0.001) return 1;
+  return fallback || 1;
+}
+
+function createBoboTimelineItem({ source, clip, start, end, x, y, endX, endY, side, waitProgress = 0 }) {
+  const duration = end === null
+    ? source.지속
+    : Math.max(0, end - start);
+  const shouldSwitchFromIdle = waitProgress > 0 && waitProgress < 1 && (Math.abs(endX - x) > 0 || Math.abs(endY - y) > 0);
+  const idleClip = shouldSwitchFromIdle ? pickBoboClipByKey("기본") : null;
+
+  return {
+    ...source,
+    이름: `보보:${clip.폴더}`,
+    폴더: 보보_폴더명,
+    동작폴더: clip.폴더,
+    파일: clip.파일,
+    시작: start,
+    종료: end,
+    지속: duration,
+    루프시작: typeof source.루프시작 === "number" ? source.루프시작 + 보보_시작_지연_초 : source.루프시작,
+    x,
+    y,
+    종료X: endX,
+    종료Y: endY,
+    이동X: endX - x,
+    이동Y: endY - y,
+    이동대기비율: waitProgress,
+    대기동작폴더: idleClip?.폴더,
+    대기파일: idleClip?.파일,
+    전환효과시작: 듀란_전환_효과_시작_초 + 보보_시작_지연_초,
+    반전중심X비율: 보보_반전중심_X비율,
+    좌우반전: side > 0
+  };
+}
+
+function pickBoboMovementClip(dx, dy) {
+  const distance = Math.max(Math.abs(dx || 0), Math.abs(dy || 0));
+  if (distance < 4) return pickBoboClipByKey("기본");
+  return pickBoboClipByKey(distance < 76 ? "걷기" : "뛰기");
+}
+
+function pickBoboClipByKey(key) {
+  const clip = 보보_동작파일[key] || 보보_동작파일.기본;
+
+  return {
+    폴더: clip.폴더,
+    파일: randomPick(clip.파일목록)
+  };
+}
+
+function getLastBoboLoopIndex(duranItems) {
+  for (let i = duranItems.length - 1; i >= 0; i -= 1) {
+    if (duranItems[i]?.반복) {
+      return i;
+    }
+  }
+
+  return -1;
+}
+
+function pickBoboRequiredPickIndex(duranItems, excludedIndex = -1) {
+  const preferred = duranItems
+    .map((item, index) => ({ item, index }))
+    .filter(({ item, index }) => index !== excludedIndex && item?.분류 !== "시작" && item?.분류 !== "이동");
+  const fallback = duranItems
+    .map((item, index) => ({ item, index }))
+    .filter(({ item, index }) => index !== excludedIndex && item?.분류 !== "시작");
+  const candidates = preferred.length > 0 ? preferred : fallback;
+
+  if (candidates.length === 0) {
+    return -1;
+  }
+
+  return randomPick(candidates).index;
+}
+
 function buildDuranActionPlan({ 환경이름, 패이름, 듀란상황 }) {
   const pool = getDuranActionPool(환경이름, 패이름, 듀란상황);
   const terminalName = maybePickTerminalAction(pool);
@@ -1268,12 +1679,13 @@ function buildDuranActionItems({ actions, looped, start, x, y }) {
 }
 
 function createDuranTimelineItem({ clip, start, x, y, dx, dy, fixed, looped }) {
-  const duration = Math.max(0, Number(clip.지속) || 0);
+  const duration = getDuranClipDuration(clip);
   const end = fixed ? null : start + duration;
 
   return {
     이름: clip.이름,
     분류: clip.분류,
+    타입: clip.타입,
     폴더: 듀란_폴더명,
     동작폴더: clip.폴더,
     파일: clip.파일,
@@ -1290,6 +1702,14 @@ function createDuranTimelineItem({ clip, start, x, y, dx, dy, fixed, looped }) {
     이동Y: dy,
     좌우반전: clip.분류 === "이동" && dx < 0
   };
+}
+
+function getDuranClipDuration(clip) {
+  if (clip?.분류 === "시작") {
+    return Math.max(0, Number(clip.지속) || 0);
+  }
+
+  return 듀란_행동_기본_지속_초;
 }
 
 function getDuranActionPool(환경이름, 패이름, 듀란상황) {
@@ -1325,13 +1745,13 @@ function makeDuranActionMap(actions) {
   return Object.fromEntries(actions.map((action) => [action.이름, action]));
 }
 
-function makeDuranAction(이름, 폴더, 파일, 지속, 타입, 감정, 상황) {
+function makeDuranAction(이름, 폴더, 파일, _지속, 타입, 감정, 상황) {
   return {
     이름,
     분류: "제자리",
     폴더,
     파일,
-    지속,
+    지속: 듀란_행동_기본_지속_초,
     타입,
     감정: Array.isArray(감정) ? 감정 : [감정],
     상황: Array.isArray(상황) ? 상황 : [상황]
@@ -1595,6 +2015,7 @@ function createMovementAction(name, direction = Math.random() < 0.5 ? -1 : 1) {
 
   return {
     ...clip,
+    지속: 듀란_행동_기본_지속_초,
     이동X: clip.이동거리 * direction,
     이동Y: 0
   };
@@ -1613,12 +2034,11 @@ function createTerminalAction(name) {
 function createReturnAction({ currentDx, currentDy, movementName }) {
   const distance = Math.max(Math.abs(currentDx), Math.abs(currentDy));
   const clip = 듀란_이동행동[movementName] || (distance > 58 ? 듀란_이동행동.달리기 : 듀란_이동행동.걷기);
-  const duration = clip === 듀란_이동행동.달리기 ? 1.35 : 2.0;
 
   return {
     ...clip,
     이름: `${clip.이름}복귀`,
-    지속: duration,
+    지속: 듀란_행동_기본_지속_초,
     이동X: -currentDx,
     이동Y: -currentDy
   };
@@ -1632,7 +2052,7 @@ function renderSingleImageSequence({ 타임라인, width, height }) {
   return 타임라인.map((item) => {
     const href = timelineItemUrl(item);
     const initialTransform = makeDuranTranslate(item.x, item.y);
-    const flipTransform = makeDuranFlipTransform(item.좌우반전, width);
+    const flipTransform = makeDuranFlipTransform(item.좌우반전, width, item.반전중심X비율);
     const displayAnimation = item.반복
       ? renderLoopVisibilityAnimation(item)
       : renderOneShotDisplayAnimation(item);
@@ -1640,7 +2060,7 @@ function renderSingleImageSequence({ 타임라인, width, height }) {
       ? renderLoopTransformAnimation(item, width)
       : renderOneShotTransformAnimation(item, width);
 
-    const transitionEffect = renderDuranImageTransitionEffects({
+    const imageContent = renderTimelineImageContent({
       item,
       href,
       width,
@@ -1654,17 +2074,112 @@ function renderSingleImageSequence({ 타임라인, width, height }) {
   >
     ${displayAnimation}${translateAnimation}
     <g transform="${escapeXml(flipTransform)}">
-      <image
+      ${imageContent}
+      ${renderCharacterTransitionEffects({ item, href, width, height })}
+    </g>
+  </g>`;
+  }).join("");
+}
+
+function renderTimelineImageContent({ item, href, width, height }) {
+  if (!item.대기파일 || !item.대기동작폴더 || !(item.이동대기비율 > 0)) {
+    return renderTimelineImageElement({ item, href, width, height });
+  }
+
+  const idleHref = timelineItemUrl({
+    ...item,
+    동작폴더: item.대기동작폴더,
+    파일: item.대기파일
+  });
+
+  return `
+      ${renderTimelineImageElement({
+        item,
+        href: idleHref,
+        width,
+        height,
+        opacity: 1,
+        animation: renderInnerImageSwitchAnimation(item, true),
+        actionFolder: item.대기동작폴더
+      })}
+      ${renderTimelineImageElement({
+        item,
+        href,
+        width,
+        height,
+        opacity: 0,
+        animation: renderInnerImageSwitchAnimation(item, false)
+      })}`;
+}
+
+function renderTimelineImageElement({ item, href, width, height, opacity = 1, animation = "", actionFolder = item.동작폴더 }) {
+  const offset = getTimelineImageOffset({ item, width, height, actionFolder });
+
+  return `<image
         href="${escapeXml(href)}"
-        x="0"
-        y="0"
+        x="${fmt(offset.x)}"
+        y="${fmt(offset.y)}"
         width="${width}"
         height="${height}"
+        opacity="${fmt(opacity)}"
         preserveAspectRatio="none"
-      />
-    </g>
-  </g>${transitionEffect}`;
-  }).join("");
+      >${animation}
+      </image>`;
+}
+
+function getTimelineImageOffset({ item, width, height, actionFolder = item?.동작폴더 } = {}) {
+  if (item?.폴더 !== 보보_폴더명) {
+    return { x: 0, y: 0 };
+  }
+
+  const bounds = 보보_스프라이트_바운딩[actionFolder] || 보보_스프라이트_바운딩.기본;
+  const sourceAnchorX = bounds.x + bounds.width / 2;
+  const sourceAnchorY = bounds.y + bounds.height;
+
+  return {
+    x: ((보보_앵커_원본_X - sourceAnchorX) / 보보_스프라이트_원본크기) * width,
+    y: ((보보_앵커_원본_Y - sourceAnchorY) / 보보_스프라이트_원본크기) * height
+  };
+}
+
+function renderInnerImageSwitchAnimation(item, showIdle) {
+  const wait = clamp01(item.이동대기비율 || 0);
+  if (wait <= 0 || wait >= 1) return "";
+
+  if (item.반복) {
+    const startOffset = clamp01((item.시작 - item.루프시작) / item.루프길이);
+    const endOffset = clamp01(((item.종료 ?? item.시작 + item.지속) - item.루프시작) / item.루프길이);
+    const waitOffset = startOffset + (endOffset - startOffset) * wait;
+    const frames = makeLoopSwitchFrames({
+      startOffset,
+      waitOffset,
+      endOffset,
+      showIdle
+    });
+
+    return `
+        <animate
+          attributeName="opacity"
+          values="${frames.values}"
+          keyTimes="${frames.keyTimes}"
+          calcMode="discrete"
+          begin="${fmt(item.루프시작)}s"
+          dur="${fmt(item.루프길이)}s"
+          repeatCount="indefinite"
+        />`;
+  }
+
+  const switchAt = Math.min(1, wait + 0.001);
+  return `
+        <animate
+          attributeName="opacity"
+          values="${showIdle ? "1;1;0;0" : "0;0;1;1"}"
+          keyTimes="0;${fmt(wait)};${fmt(switchAt)};1"
+          calcMode="discrete"
+          begin="${fmt(item.시작)}s"
+          dur="${fmt(item.지속)}s"
+          fill="freeze"
+        />`;
 }
 
 function renderOneShotDisplayAnimation(item) {
@@ -1684,6 +2199,22 @@ function renderOneShotDisplayAnimation(item) {
 function renderOneShotTransformAnimation(item, width) {
   if (!item.지속 || item.지속 <= 0 || (item.이동X === 0 && item.이동Y === 0)) {
     return "";
+  }
+
+  const wait = clamp01(item.이동대기비율 || 0);
+  if (wait > 0) {
+    const startTransform = makeDuranTranslateValue(item.x, item.y);
+    const endTransform = makeDuranTranslateValue(item.종료X, item.종료Y);
+
+    return `<animateTransform
+      attributeName="transform"
+      type="translate"
+      values="${escapeXml(`${startTransform};${startTransform};${endTransform}`)}"
+      keyTimes="0;${fmt(wait)};1"
+      begin="${fmt(item.시작)}s"
+      dur="${fmt(item.지속)}s"
+      fill="freeze"
+    />\n    `;
   }
 
   return `<animateTransform
@@ -1715,6 +2246,31 @@ function renderLoopTransformAnimation(item, width) {
   const times = makeLoopKeyTimes(item);
   const startTransform = makeDuranTranslateValue(item.x, item.y);
   const endTransform = makeDuranTranslateValue(item.종료X, item.종료Y);
+  const wait = clamp01(item.이동대기비율 || 0);
+
+  if (wait > 0) {
+    const startOffset = clamp01((item.시작 - item.루프시작) / item.루프길이);
+    const endOffset = clamp01(((item.종료 ?? item.시작 + item.지속) - item.루프시작) / item.루프길이);
+    const waitOffset = startOffset + (endOffset - startOffset) * wait;
+    const frames = makeLoopTransformFrames({
+      startValue: startTransform,
+      endValue: endTransform,
+      startOffset,
+      waitOffset,
+      endOffset
+    });
+
+    return `<animateTransform
+      attributeName="transform"
+      type="translate"
+      values="${escapeXml(frames.values)}"
+      keyTimes="${frames.keyTimes}"
+      begin="${fmt(item.루프시작)}s"
+      dur="${fmt(item.루프길이)}s"
+      repeatCount="indefinite"
+    />\n    `;
+  }
+
   const values = makeLoopValues({
     startValue: startTransform,
     endValue: endTransform,
@@ -1766,6 +2322,60 @@ function makeLoopValues({ startValue, endValue, startAtZero, endAtOne }) {
   return `${startValue};${startValue};${endValue};${endValue}`;
 }
 
+function makeLoopTransformFrames({ startValue, endValue, startOffset, waitOffset, endOffset }) {
+  const frames = [];
+  const pushFrame = (time, value) => {
+    const t = clamp01(time);
+    const last = frames[frames.length - 1];
+    if (last && Math.abs(last.time - t) < 0.0005) {
+      last.value = value;
+      return;
+    }
+    if (!last || t > last.time) {
+      frames.push({ time: t, value });
+    }
+  };
+
+  pushFrame(0, startValue);
+  pushFrame(startOffset, startValue);
+  pushFrame(waitOffset, startValue);
+  pushFrame(endOffset, endValue);
+  pushFrame(1, endValue);
+
+  return {
+    keyTimes: frames.map((frame) => fmt(frame.time)).join(";"),
+    values: frames.map((frame) => frame.value).join(";")
+  };
+}
+
+function makeLoopSwitchFrames({ startOffset, waitOffset, endOffset, showIdle }) {
+  const frames = [];
+  const pushFrame = (time, value) => {
+    const t = clamp01(time);
+    const last = frames[frames.length - 1];
+    if (last && Math.abs(last.time - t) < 0.0005) {
+      last.value = value;
+      return;
+    }
+    if (!last || t > last.time) {
+      frames.push({ time: t, value });
+    }
+  };
+  const before = showIdle ? "1" : "0";
+  const after = showIdle ? "0" : "1";
+
+  pushFrame(0, "0");
+  pushFrame(startOffset, before);
+  pushFrame(waitOffset, after);
+  pushFrame(endOffset, after);
+  pushFrame(1, "0");
+
+  return {
+    keyTimes: frames.map((frame) => fmt(frame.time)).join(";"),
+    values: frames.map((frame) => frame.value).join(";")
+  };
+}
+
 function makeDuranTranslate(x, y) {
   return `translate(${makeDuranTranslateValue(x, y)})`;
 }
@@ -1774,83 +2384,91 @@ function makeDuranTranslateValue(x, y) {
   return `${fmt(x)} ${fmt(y)}`;
 }
 
-function makeDuranFlipTransform(flipX, width) {
+function makeDuranFlipTransform(flipX, width, centerRatio = 0.5) {
   if (flipX) {
-    return `translate(${fmt(width)} 0) scale(-1 1)`;
+    const centerX = width * clamp(Number(centerRatio) || 0.5, 0.2, 0.8);
+    return `translate(${fmt(centerX * 2)} 0) scale(-1 1)`;
   }
 
   return "";
 }
 
-function renderDuranImageTransitionEffects({ item, href, width, height }) {
-  if (item.폴더 !== 듀란_폴더명 || !isTimelineItemActiveAt(item, 듀란_전환_효과_시작_초)) {
+function renderCharacterTransitionEffects({ item, href, width, height }) {
+  const 시작 = getCharacterTransitionStart(item);
+  if (!isTimelineItemActiveAt(item, 시작)) {
     return "";
   }
 
-  const 시작 = 듀란_전환_효과_시작_초;
-  const 종료 = 듀란_전환_효과_시작_초 + 듀란_전환_실루엣_초;
+  const 종료 = 시작 + 듀란_전환_실루엣_초;
+  const offset = getTimelineImageOffset({ item, width, height });
   const commonAttrs = `
-    href="${escapeXml(href)}"
-    x="${fmt(getTimelineItemXAt(item, 시작))}"
-    y="${fmt(getTimelineItemYAt(item, 시작))}"
-    width="${width}"
-    height="${height}"
-    display="none"
-    preserveAspectRatio="none"`;
+        href="${escapeXml(href)}"
+        x="${fmt(offset.x)}"
+        y="${fmt(offset.y)}"
+        width="${width}"
+        height="${height}"
+        display="none"
+        preserveAspectRatio="none"`;
 
   return `
-  <image
-    ${commonAttrs}
-    opacity="0"
-    filter="url(#duran-surprise-silhouette)"
-  >
-    <set attributeName="display" to="inline" begin="${fmt(시작)}s" fill="freeze" />
-    <set attributeName="display" to="none" begin="${fmt(종료)}s" fill="freeze" />
-    <animate
-      attributeName="opacity"
-      values="0;0.9;0.72;0.38;0"
-      keyTimes="0;0.14;0.36;0.68;1"
-      begin="${fmt(시작)}s"
-      dur="${fmt(듀란_전환_실루엣_초)}s"
-      fill="freeze"
-    />
-  </image>
+      <image
+        ${commonAttrs}
+        opacity="0"
+        filter="url(#duran-surprise-silhouette)"
+      >
+        <set attributeName="display" to="inline" begin="${fmt(시작)}s" fill="freeze" />
+        <set attributeName="display" to="none" begin="${fmt(종료)}s" fill="freeze" />
+        <animate
+          attributeName="opacity"
+          values="0;0.9;0.72;0.38;0"
+          keyTimes="0;0.14;0.36;0.68;1"
+          begin="${fmt(시작)}s"
+          dur="${fmt(듀란_전환_실루엣_초)}s"
+          fill="freeze"
+        />
+      </image>
 
-  <image
-    ${commonAttrs}
-    opacity="0"
-    filter="url(#duran-inner-glow-thin)"
-  >
-    <set attributeName="display" to="inline" begin="${fmt(시작)}s" fill="freeze" />
-    <set attributeName="display" to="none" begin="${fmt(종료)}s" fill="freeze" />
-    <animate
-      attributeName="opacity"
-      values="0;0.82;0.72;0.54;0.36;0.24;0.14;0.08;0.03;0"
-      keyTimes="0;0.111;0.222;0.333;0.444;0.556;0.667;0.778;0.889;1"
-      calcMode="discrete"
-      begin="${fmt(시작)}s"
-      dur="${fmt(듀란_전환_실루엣_초)}s"
-      fill="freeze"
-    />
-  </image>
+      <image
+        ${commonAttrs}
+        opacity="0"
+        filter="url(#duran-inner-glow-thin)"
+      >
+        <set attributeName="display" to="inline" begin="${fmt(시작)}s" fill="freeze" />
+        <set attributeName="display" to="none" begin="${fmt(종료)}s" fill="freeze" />
+        <animate
+          attributeName="opacity"
+          values="0;0.82;0.72;0.54;0.36;0.24;0.14;0.08;0.03;0"
+          keyTimes="0;0.111;0.222;0.333;0.444;0.556;0.667;0.778;0.889;1"
+          calcMode="discrete"
+          begin="${fmt(시작)}s"
+          dur="${fmt(듀란_전환_실루엣_초)}s"
+          fill="freeze"
+        />
+      </image>
 
-  <image
-    ${commonAttrs}
-    opacity="0"
-    filter="url(#duran-inner-glow-wide)"
-  >
-    <set attributeName="display" to="inline" begin="${fmt(시작 + 0.08)}s" fill="freeze" />
-    <set attributeName="display" to="none" begin="${fmt(종료)}s" fill="freeze" />
-    <animate
-      attributeName="opacity"
-      values="0;0.7;0.54;0.36;0.22;0.13;0.07;0.035;0.014;0"
-      keyTimes="0;0.111;0.222;0.333;0.444;0.556;0.667;0.778;0.889;1"
-      calcMode="discrete"
-      begin="${fmt(시작 + 0.08)}s"
-      dur="${fmt(듀란_전환_실루엣_초 - 0.08)}s"
-      fill="freeze"
-    />
-  </image>`;
+      <image
+        ${commonAttrs}
+        opacity="0"
+        filter="url(#duran-inner-glow-wide)"
+      >
+        <set attributeName="display" to="inline" begin="${fmt(시작 + 0.08)}s" fill="freeze" />
+        <set attributeName="display" to="none" begin="${fmt(종료)}s" fill="freeze" />
+        <animate
+          attributeName="opacity"
+          values="0;0.7;0.54;0.36;0.22;0.13;0.07;0.035;0.014;0"
+          keyTimes="0;0.111;0.222;0.333;0.444;0.556;0.667;0.778;0.889;1"
+          calcMode="discrete"
+          begin="${fmt(시작 + 0.08)}s"
+          dur="${fmt(듀란_전환_실루엣_초 - 0.08)}s"
+          fill="freeze"
+        />
+      </image>`;
+}
+
+function getCharacterTransitionStart(item) {
+  return typeof item.전환효과시작 === "number"
+    ? item.전환효과시작
+    : 듀란_전환_효과_시작_초;
 }
 
 function isTimelineItemActiveAt(item, time) {
@@ -1878,6 +2496,20 @@ function getTimelineItemYAt(item, time) {
 function clamp01(value) {
   if (value < 0) return 0;
   if (value > 1) return 1;
+  return value;
+}
+
+function clamp(value, min, max) {
+  if (value < min) return min;
+  if (value > max) return max;
+  return value;
+}
+
+function clampSigned(value, maxAbs) {
+  const limit = Math.max(0, Number(maxAbs) || 0);
+  if (limit === 0) return 0;
+  if (value > limit) return limit;
+  if (value < -limit) return -limit;
   return value;
 }
 
@@ -1976,6 +2608,27 @@ function isMobileUserAgent(userAgent) {
   return /Android|iPhone|iPad|iPod|Mobile|Windows Phone/i.test(userAgent);
 }
 
+function isMobileRequest(request, params) {
+  const explicit = normalizeToken(params.get("모바일") || params.get("mobile") || params.get("m") || "");
+  if (["1", "true", "yes", "y", "mobile", "m", "phone"].includes(explicit)) {
+    return true;
+  }
+  if (["0", "false", "no", "n", "desktop", "pc"].includes(explicit)) {
+    return false;
+  }
+
+  const cfDeviceType = normalizeToken(request.headers.get("cf-device-type") || request.cf?.deviceType || "");
+  if (cfDeviceType === "mobile") {
+    return true;
+  }
+
+  return isMobileUserAgent(request.headers.get("user-agent") || "");
+}
+
+function normalizeToken(value) {
+  return String(value || "").trim().toLowerCase();
+}
+
 function getEffectTheme(환경이름) {
   return 환경_효과테마[환경이름] || 환경_효과테마[기본_환경];
 }
@@ -2065,6 +2718,15 @@ function randomInt(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
 }
 
+function randomBetween(min, max) {
+  return min + Math.random() * (max - min);
+}
+
+function randomSignedRange(min, max) {
+  const value = randomBetween(min, max);
+  return Math.random() < 0.5 ? -value : value;
+}
+
 function randomPickUnique(arr, count) {
   const pool = [...new Set((arr || []).filter(Boolean))];
   const picked = [];
@@ -2090,7 +2752,8 @@ function encodePath(parts) {
 }
 
 function assetUrl(folder, file) {
-  return `${BASE_URL}/${encodeURIComponent(folder)}/${encodeURIComponent(file)}`;
+  const folderParts = String(folder || "").split("/").filter(Boolean);
+  return `${BASE_URL}/${encodePath([...folderParts, file])}`;
 }
 
 function duranAssetUrl(actionFolder, file) {
@@ -2100,6 +2763,11 @@ function duranAssetUrl(actionFolder, file) {
 function timelineItemUrl(item) {
   if (item.폴더 === 듀란_폴더명) {
     return duranAssetUrl(item.동작폴더, item.파일);
+  }
+
+  if (item.동작폴더) {
+    const folderParts = String(item.폴더 || "").split("/").filter(Boolean);
+    return `${BASE_URL}/${encodePath([...folderParts, item.동작폴더, item.파일])}`;
   }
 
   return assetUrl(item.폴더, item.파일);
@@ -2153,7 +2821,7 @@ function getHelpText() {
     "  - 환경: 환경정지/기본.webp -> 환경/{선택환경파일}.webp -> 환경반복/{선택환경파일}.webp",
     "  - 패: 환경반복 시작과 동시에 패/{패}.webp 표시 후 계속 유지",
     "  - 효과: 패 등장 시 소환 파문/접지 그림자/짧은 반짝임, 이후 환경별 약한 잔향 유지",
-    "  - 듀란: 기본 4초 -> 놀람 3.5초 고정 후 이동 > 행동 > 기본/기본1 > 행동 > 복귀를 양방향 루프로 조합",
+    "  - 듀란: 기본 4초 -> 놀람 3.5초 고정 프리셋 후 모든 이동/행동/복귀는 2초 기준으로 양방향 루프 조합",
     "  - 행동 선택: 타입/감정/상황 태그를 기준으로 필터링하며, 조우 기본값은 낯섦이라 미소류를 막음",
     "  - 이동 행동이 왼쪽으로 갈 때는 원본 오른쪽 방향 애니메이션을 좌우 반전",
     "  - 이동거리: 걷기 84px, 달리기 148px",

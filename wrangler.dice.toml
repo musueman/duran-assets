@@ -1,0 +1,13 @@
+name = "dice-dev"
+main = "webp-dice-worker.js"
+compatibility_date = "2026-05-29"
+
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+[env.dev]
+name = "dice-dev"
+
+[env.prod]
+name = "dice"
