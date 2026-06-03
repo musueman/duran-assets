@@ -1,0 +1,22 @@
+name = "duran-worker-system-docs-dev"
+main = "worker.js"
+compatibility_date = "2026-06-03"
+
+[observability]
+enabled = true
+head_sampling_rate = 1
+
+[vars]
+STAGE = "dev"
+
+[env.dev]
+name = "duran-worker-system-docs-dev"
+
+[env.dev.vars]
+STAGE = "dev"
+
+[env.prod]
+name = "duran-worker-system-docs"
+
+[env.prod.vars]
+STAGE = "prod"
