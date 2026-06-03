@@ -387,11 +387,13 @@ function renderHtml() {
       white-space: pre;
       tab-size: 2;
     }
-    pre code {
+    .content pre code,
+    .markdown pre code {
       background: transparent;
       color: inherit;
       padding: 0;
       border-radius: 0;
+      display: block;
     }
     .error {
       color: #8f1d1d;
