@@ -5,7 +5,7 @@ Public Cloudflare Worker page for browsing the chatbot-worker system guide, spli
 ## Pages
 
 - `/`: developer-oriented document/source viewer.
-- `/duran-chatbot-full`: beginner-oriented archive with the current system prompt, worldbuilding axis, lorebook texts, 500-character lorebook variants, character info, Worker source, and operation docs as final reference material.
+- `/duran-chatbot-full`: beginner-oriented archive with additional system data, character setting, lorebook texts, 500-character lorebook variants, simulation-infinite-prompt character info management, Worker source, and operation docs as final reference material.
 
 ## Deploy
 
