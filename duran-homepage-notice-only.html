@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>듀란일대기 - Chronicle of Duran</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;900&family=Noto+Serif+KR:wght@300;400;600;900&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --gold-light: #fff4cf;
+      --gold-main: #ffd98a;
+      --gold-dark: #b89c58;
+      --bg-deep: #050505;
+      --bg-panel: rgba(16, 20, 24, 0.95);
+      --border-gold: rgba(255, 218, 137, 0.25);
+      --glow-gold: 0 0 20px rgba(255, 218, 137, 0.15);
+      --font-serif: 'Noto Serif KR', serif;
+      --font-cinzel: 'Cinzel', serif;
+    }
+
+    body {
+      background-color: var(--bg-deep);
+      background-image:
+        radial-gradient(circle at 50% 0%, #151e1a 0%, var(--bg-deep) 70%),
+        url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.02'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+      margin: 0;
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      color: #e8dcc5;
+      font-family: var(--font-serif);
+    }
+
+    .duran-wrap {
+      width: 100%;
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 70px 50px;
+      border-radius: 16px;
+      background:
+        linear-gradient(180deg, rgba(20, 26, 22, 0.95) 0%, rgba(10, 12, 16, 0.98) 100%);
+      border: 1px solid var(--border-gold);
+      box-shadow:
+        0 40px 100px rgba(0,0,0,0.9),
+        inset 0 0 80px rgba(0, 0, 0, 0.8),
+        inset 0 0 20px rgba(255, 218, 137, 0.08);
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+      box-sizing: border-box;
+    }
+
+    .duran-wrap::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background-image: radial-gradient(circle, var(--gold-main) 1px, transparent 1px);
+      background-size: 120px 120px;
+      opacity: 0.03;
+      transform: rotate(45deg);
+      pointer-events: none;
+      animation: drift 80s linear infinite;
+    }
+
+    @keyframes drift {
+      0% { transform: rotate(45deg) translateY(0); }
+      100% { transform: rotate(45deg) translateY(-150px); }
+    }
+
+    .duran-ornament-top,
+    .duran-ornament-bottom {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 85%;
+      height: 20px;
+      background:
+        radial-gradient(circle at center, var(--gold-main) 0%, transparent 2px),
+        linear-gradient(90deg, transparent, var(--border-gold), transparent);
+      background-size: 24px 20px, 100% 1px;
+      background-position: center, center;
+      background-repeat: no-repeat, no-repeat;
+      z-index: 1;
+      opacity: 0.6;
+    }
+
+    .duran-ornament-top { top: 25px; }
+    .duran-ornament-bottom { bottom: 25px; }
+
+    .duran-symbol {
+      font-family: var(--font-cinzel);
+      font-size: 32px;
+      color: var(--gold-main);
+      margin-bottom: 30px;
+      letter-spacing: 0.3em;
+      opacity: 0.9;
+      text-shadow: 0 0 25px rgba(255,218,137,0.4);
+      animation: pulse 4s ease-in-out infinite alternate;
+      position: relative;
+      z-index: 2;
+    }
+
+    @keyframes pulse {
+      0% {
+        opacity: 0.5;
+        text-shadow: 0 0 10px rgba(255,218,137,0.1);
+      }
+      100% {
+        opacity: 1;
+        text-shadow: 0 0 30px rgba(255,218,137,0.7);
+      }
+    }
+
+    .duran-update-box {
+      max-width: 640px;
+      margin: 0 auto 50px;
+      border-radius: 6px;
+      background: rgba(10, 12, 14, 0.7);
+      border: 1px solid rgba(255, 218, 137, 0.15);
+      border-left: 3px solid var(--gold-dark);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.6);
+      text-align: left;
+      position: relative;
+      z-index: 2;
+    }
+
+    .duran-update-head {
+      cursor: pointer;
+      list-style: none;
+      padding: 18px 26px;
+      color: var(--gold-main);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: background 0.3s ease;
+    }
+
+    .duran-update-head:hover {
+      background: rgba(255, 218, 137, 0.08);
+    }
+
+    .duran-update-head::-webkit-details-marker {
+      display: none;
+    }
+
+    .duran-update-title {
+      font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    .duran-update-sub {
+      display: block;
+      margin-top: 6px;
+      color: rgba(232, 220, 197, 0.5);
+      font-size: 12px;
+    }
+
+    .duran-update-icon {
+      font-family: var(--font-cinzel);
+      font-size: 22px;
+      transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .duran-update-box[open] .duran-update-icon {
+      transform: rotate(180deg);
+      color: var(--gold-light);
+    }
+
+    .duran-update-body {
+      padding: 0 26px 26px;
+      border-top: 1px solid rgba(255,218,137,0.08);
+      animation: unfold 0.4s ease-out;
+    }
+
+    @keyframes unfold {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .duran-update-date {
+      margin: 24px 0 12px;
+      color: var(--gold-dark);
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+    }
+
+    .duran-update-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 12px;
+    }
+
+    .duran-update-list li {
+      position: relative;
+      padding-left: 22px;
+      font-size: 14.5px;
+      line-height: 1.6;
+      color: rgba(232, 220, 197, 0.85);
+    }
+
+    .duran-update-list li::before {
+      content: "◈";
+      position: absolute;
+      left: 0;
+      top: 2px;
+      color: var(--gold-dark);
+      font-size: 12px;
+    }
+
+    .duran-notice-card {
+      width: 100%;
+      max-width: 640px;
+      margin: 0 auto 64px;
+      padding: 26px 28px;
+      box-sizing: border-box;
+      background: rgba(10, 12, 14, 0.72);
+      border: 1px solid rgba(255, 218, 137, 0.18);
+      border-left: 3px solid var(--gold-dark);
+      border-radius: 6px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.58);
+      text-align: left;
+      position: relative;
+      z-index: 2;
+    }
+
+    .duran-notice-title {
+      margin: 0 0 18px;
+      font-family: var(--font-cinzel);
+      color: var(--gold-main);
+      font-size: 17px;
+      letter-spacing: 0.12em;
+      text-align: left;
+    }
+
+    .duran-notice-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 12px;
+    }
+
+    .duran-notice-list li {
+      position: relative;
+      padding-left: 22px;
+      color: rgba(232, 220, 197, 0.84);
+      font-size: 14.5px;
+      line-height: 1.7;
+      word-break: keep-all;
+    }
+
+    .duran-notice-list li::before {
+      content: "◈";
+      position: absolute;
+      left: 0;
+      top: 2px;
+      color: var(--gold-dark);
+      font-size: 12px;
+    }
+
+    .duran-notice-list strong {
+      color: var(--gold-light);
+      font-weight: 700;
+    }
+
+    .duran-main-frame {
+      position: relative;
+      max-width: 680px;
+      margin: 0 auto 40px;
+      padding: 10px;
+      background: linear-gradient(135deg, rgba(255,218,137,0.15) 0%, transparent 50%, rgba(255,218,137,0.15) 100%);
+      border-radius: 8px;
+      box-shadow: 0 25px 60px rgba(0,0,0,0.8);
+      z-index: 2;
+    }
+
+    .duran-main-frame::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border: 1px solid rgba(255, 218, 137, 0.3);
+      border-radius: 8px;
+      pointer-events: none;
+    }
+
+    .duran-main-img {
+      width: 100%;
+      display: block;
+      border-radius: 4px;
+      border: 1px solid rgba(0,0,0,0.8);
+      filter: sepia(0.3) contrast(1.15) brightness(0.85);
+      transition: filter 0.6s ease, transform 0.6s ease;
+      object-fit: cover;
+    }
+
+    .duran-main-frame:hover .duran-main-img {
+      filter: sepia(0.1) contrast(1.2) brightness(1);
+      transform: scale(1.01);
+    }
+
+    .duran-badge {
+      display: inline-block;
+      font-family: var(--font-cinzel);
+      padding: 8px 24px;
+      margin-bottom: 24px;
+      background: rgba(10,10,10,0.5);
+      border: 1px solid var(--gold-dark);
+      color: var(--gold-main);
+      font-size: 15px;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    }
+
+    .duran-title {
+      margin: 0;
+      font-size: 52px;
+      font-weight: 900;
+      color: var(--gold-light);
+      text-shadow:
+        0 5px 25px rgba(0,0,0,0.9),
+        0 0 20px rgba(255,218,137,0.3);
+      letter-spacing: -0.02em;
+      position: relative;
+      z-index: 2;
+    }
+
+    .duran-divider {
+      width: 140px;
+      height: 2px;
+      margin: 30px auto;
+      background: linear-gradient(90deg, transparent, var(--gold-main), transparent);
+      position: relative;
+      z-index: 2;
+    }
+
+    .duran-divider::after {
+      content: '♦';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      color: var(--gold-main);
+      font-size: 16px;
+      background: #0a0b0d;
+      padding: 0 12px;
+    }
+
+    .duran-subtitle {
+      margin: 0 0 35px;
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--gold-dark);
+      font-style: italic;
+      position: relative;
+      z-index: 2;
+    }
+
+    .duran-intro {
+      max-width: 620px;
+      margin: 0 auto 50px;
+      font-size: 17px;
+      line-height: 1.9;
+      color: rgba(232, 220, 197, 0.9);
+      word-break: keep-all;
+      text-shadow: 0 2px 5px rgba(0,0,0,0.9);
+      position: relative;
+      z-index: 2;
+    }
+
+    .duran-play-box {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 50px 40px;
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255, 218, 137, 0.05), transparent 70%),
+        rgba(10, 12, 14, 0.6);
+      border: 1px solid rgba(255, 218, 137, 0.15);
+      border-radius: 12px;
+      position: relative;
+      z-index: 2;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    }
+
+    .duran-section-label {
+      font-family: var(--font-cinzel);
+      text-align: center;
+      margin-bottom: 30px;
+      color: var(--gold-dark);
+      font-size: 20px;
+      letter-spacing: 0.25em;
+    }
+
+    .duran-card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      text-align: left;
+    }
+
+    .duran-step-card {
+      display: flex;
+      flex-direction: column;
+      background: rgba(18, 22, 26, 0.85);
+      border: 1px solid rgba(255, 218, 137, 0.15);
+      border-radius: 8px;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+      position: relative;
+    }
+
+    .duran-step-card::before {
+      content: '';
+      position: absolute;
+      inset: 4px;
+      border: 1px solid rgba(255, 218, 137, 0.05);
+      border-radius: 4px;
+      pointer-events: none;
+      z-index: 3;
+    }
+
+    .duran-step-card:hover {
+      transform: translateY(-8px);
+      background: rgba(24, 28, 34, 0.95);
+      border-color: var(--gold-main);
+      box-shadow:
+        0 20px 40px rgba(0,0,0,0.8),
+        0 0 25px rgba(255,218,137,0.1);
+    }
+
+    .duran-card-img-wrapper {
+      width: 100%;
+      height: 160px;
+      overflow: hidden;
+      position: relative;
+      border-bottom: 1px solid rgba(255, 218, 137, 0.15);
+    }
+
+    .duran-card-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(30%) sepia(40%) brightness(0.8);
+      transition: transform 0.6s ease, filter 0.6s ease;
+    }
+
+    .duran-step-card:hover .duran-card-img {
+      transform: scale(1.08);
+      filter: grayscale(0%) sepia(10%) brightness(1);
+    }
+
+    .duran-step-content {
+      padding: 24px;
+      flex-grow: 1;
+      position: relative;
+    }
+
+    .duran-step-number {
+      font-family: var(--font-cinzel);
+      font-size: 32px;
+      color: rgba(255, 218, 137, 0.15);
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-weight: 700;
+      line-height: 1;
+      pointer-events: none;
+    }
+
+    .duran-step-title {
+      color: var(--gold-main);
+      font-size: 16px;
+      font-weight: 600;
+      margin-bottom: 12px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .duran-step-text {
+      color: rgba(232, 220, 197, 0.75);
+      font-size: 14px;
+      line-height: 1.7;
+      position: relative;
+      z-index: 1;
+      word-break: keep-all;
+    }
+
+    .duran-step-card.no-img-card {
+      grid-column: 1 / -1;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 30px;
+      background: radial-gradient(circle at center, rgba(255, 218, 137, 0.08) 0%, rgba(18, 22, 26, 0.85) 70%);
+      border: 1px solid var(--gold-dark);
+    }
+
+    .duran-step-card.no-img-card .duran-step-number {
+      position: static;
+      margin-bottom: 15px;
+      font-size: 42px;
+      color: var(--gold-main);
+      opacity: 0.6;
+    }
+
+    .duran-step-card.no-img-card .duran-step-title {
+      font-size: 20px;
+      margin-bottom: 15px;
+      color: var(--gold-light);
+    }
+
+    .duran-step-card.no-img-card .duran-step-content {
+      padding: 0;
+      width: 100%;
+    }
+
+    .duran-start-example {
+      margin-top: 40px;
+      padding: 24px;
+      background: linear-gradient(90deg, transparent, rgba(255, 218, 137, 0.08), transparent);
+      border-top: 1px solid rgba(255, 218, 137, 0.15);
+      border-bottom: 1px solid rgba(255, 218, 137, 0.15);
+      color: rgba(232, 220, 197, 0.6);
+      font-size: 15px;
+      line-height: 1.8;
+      font-style: italic;
+      text-align: center;
+    }
+
+    .duran-start-example span {
+      display: block;
+      margin-top: 10px;
+      color: var(--gold-light);
+      font-size: 17px;
+      font-weight: 600;
+    }
+
+    .highlight-text {
+      color: var(--gold-light);
+      font-weight: 600;
+    }
+
+    .duran-gallery-wrap {
+      margin-top: 80px;
+      position: relative;
+      z-index: 2;
+      border-top: 1px dashed rgba(255, 218, 137, 0.2);
+      padding-top: 60px;
+    }
+
+    .duran-gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 20px;
+      margin-top: 40px;
+    }
+
+    .duran-gallery-item {
+      display: block;
+      text-decoration: none;
+      color: inherit;
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+      aspect-ratio: 3 / 4;
+      border: 1px solid rgba(255, 218, 137, 0.2);
+      background: #0a0b0d;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+      cursor: pointer;
+    }
+
+    .duran-gallery-item::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .duran-gallery-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(40%) sepia(30%) brightness(0.7);
+      transition: transform 0.5s ease, filter 0.5s ease;
+    }
+
+    .duran-gallery-item:hover .duran-gallery-img {
+      transform: scale(1.08);
+      filter: grayscale(0%) sepia(0%) brightness(1.1);
+    }
+
+    .duran-gallery-caption {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      padding: 20px 10px 15px;
+      background: linear-gradient(0deg, rgba(0,0,0,0.9) 0%, transparent 100%);
+      color: var(--gold-main);
+      font-size: 13px;
+      text-align: center;
+      z-index: 2;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+      font-weight: 600;
+    }
+
+    .duran-gallery-item:hover .duran-gallery-caption {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .duran-image-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+      background:
+        radial-gradient(circle at center, rgba(255, 218, 137, 0.08), transparent 48%),
+        rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(6px);
+    }
+
+    .duran-image-overlay:target {
+      display: flex;
+      animation: overlayFade 0.28s ease-out;
+    }
+
+    @keyframes overlayFade {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .duran-overlay-backdrop {
+      position: absolute;
+      inset: 0;
+      cursor: default;
+    }
+
+    .duran-overlay-frame {
+      position: relative;
+      z-index: 1;
+      width: min(92vw, 820px);
+      max-height: 90vh;
+      padding: 12px;
+      border-radius: 10px;
+      background:
+        linear-gradient(135deg, rgba(255,218,137,0.22), transparent 42%, rgba(255,218,137,0.16)),
+        rgba(8, 10, 12, 0.94);
+      border: 1px solid rgba(255, 218, 137, 0.32);
+      box-shadow:
+        0 30px 90px rgba(0,0,0,0.92),
+        0 0 45px rgba(255,218,137,0.08),
+        inset 0 0 28px rgba(255,218,137,0.04);
+      animation: overlayRise 0.32s cubic-bezier(0.22, 0.9, 0.24, 1);
+    }
+
+    @keyframes overlayRise {
+      from {
+        opacity: 0;
+        transform: translateY(18px) scale(0.97);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    .duran-overlay-img {
+      display: block;
+      width: 100%;
+      max-height: 78vh;
+      object-fit: contain;
+      border-radius: 5px;
+      border: 1px solid rgba(0,0,0,0.85);
+      background: #050505;
+      filter: contrast(1.05) brightness(0.96);
+    }
+
+    .duran-overlay-caption {
+      padding: 14px 8px 4px;
+      color: var(--gold-main);
+      font-size: 14px;
+      text-align: center;
+      letter-spacing: 0.04em;
+    }
+
+    .duran-overlay-close {
+      position: absolute;
+      top: -18px;
+      right: -18px;
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: rgba(10, 10, 10, 0.96);
+      border: 1px solid rgba(255, 218, 137, 0.45);
+      color: var(--gold-light);
+      font-family: var(--font-cinzel);
+      font-size: 22px;
+      line-height: 1;
+      text-decoration: none;
+      box-shadow:
+        0 10px 24px rgba(0,0,0,0.72),
+        0 0 18px rgba(255,218,137,0.12);
+      transition:
+        transform 0.25s ease,
+        background 0.25s ease,
+        border-color 0.25s ease;
+    }
+
+    .duran-overlay-close:hover {
+      transform: rotate(90deg) scale(1.08);
+      background: rgba(30, 24, 18, 0.98);
+      border-color: var(--gold-main);
+    }
+
+    .duran-footer {
+      margin-top: 70px;
+      font-family: var(--font-cinzel);
+      font-size: 13px;
+      color: rgba(255, 218, 137, 0.4);
+      letter-spacing: 0.3em;
+      position: relative;
+      z-index: 2;
+    }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 24px 12px;
+      }
+
+      .duran-wrap {
+        padding: 40px 20px;
+      }
+
+      .duran-title {
+        font-size: 38px;
+      }
+
+      .duran-subtitle {
+        font-size: 18px;
+      }
+
+      .duran-notice-card {
+        max-width: 100%;
+        margin-bottom: 44px;
+        padding: 22px 20px;
+      }
+
+      .duran-notice-title {
+        font-size: 15px;
+      }
+
+      .duran-notice-list li {
+        font-size: 14px;
+      }
+
+      .duran-play-box {
+        padding: 30px 20px;
+      }
+
+      .duran-card-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .duran-gallery-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+      }
+
+      .duran-image-overlay {
+        padding: 28px 14px;
+      }
+
+      .duran-overlay-frame {
+        width: 94vw;
+        padding: 8px;
+      }
+
+      .duran-overlay-img {
+        max-height: 76vh;
+      }
+
+      .duran-overlay-close {
+        top: -14px;
+        right: -10px;
+        width: 34px;
+        height: 34px;
+        font-size: 20px;
+      }
+
+      .duran-overlay-caption {
+        font-size: 13px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="duran-wrap">
+    <div class="duran-ornament-top"></div>
+    <div class="duran-ornament-bottom"></div>
+
+    <div class="duran-symbol">✣</div>
+
+    <details class="duran-update-box">
+      <summary class="duran-update-head">
+        <span>
+          <span class="duran-update-title">전령의 두루마리 (업데이트 내역)</span>
+          <span class="duran-update-sub">인장을 클릭하여 봉인을 해제하십시오</span>
+        </span>
+        <span class="duran-update-icon">▼</span>
+      </summary>
+
+      <div class="duran-update-body">
+        <div class="duran-update-date">제국력 2026.05.16 · 다섯 번째 서신</div>
+        <ul class="duran-update-list">
+          <li>주사위 배경도 상황에 따라 변경이 됩니다!</li>
+          <li>듀란이 살아 숨쉽니다! 이제 그냥 숨만쉬지 않습니다!</li>
+        </ul>
+
+        <div class="duran-update-date">제국력 2026.05.15 · 네 번째 서신</div>
+        <ul class="duran-update-list">
+          <li>이제 주사위를 좀더 비주얼틱하게 확인 하실 수 있습니다!</li>
+          <li>각 상황과 배경에 맞는 배경이미지와 보드 세팅을 즐기세요!</li>
+        </ul>
+
+        <div class="duran-update-date">제국력 2026.05.14 · 세 번째 서신</div>
+        <ul class="duran-update-list">
+          <li>오래된 고서적 스타일의 타로 카드 레이아웃이 적용되었습니다.</li>
+          <li>시작의 맹세(5번 항목)가 돋보이도록 마도서 양식으로 재디자인 되었습니다.</li>
+          <li>기록보관소(갤러리)가 신설되었습니다.</li>
+        </ul>
+
+        <div class="duran-update-date">제국력 2026.05.14 · 두 번째 서신</div>
+        <ul class="duran-update-list">
+          <li>하단 이미지 영역에 자연스러운 효과들이 추가되었습니다.</li>
+          <li>살아 숨쉬는 듀란을 만나보세요!</li>
+        </ul>
+
+        <div class="duran-update-date">제국력 2026.05.14 · 첫 번째 서신</div>
+        <ul class="duran-update-list">
+          <li>전체 스토리 라인이 정리되었습니다.</li>
+          <li>로직 및 시스템이 정리되었습니다.</li>
+          <li>로어북이 강화되었습니다.</li>
+          <li>이제는 장막도 주사위를 던집니다!</li>
+        </ul>
+      </div>
+    </details>
+
+    <section class="duran-notice-card">
+      <h3 class="duran-notice-title">DISPLAY CHECK</h3>
+
+      <ul class="duran-notice-list">
+        <li>플레이 중 <strong>운명의흔적</strong>, <strong>새운명의패</strong>, <strong>장면 SVG</strong>, <strong>듀란 대사 SVG</strong>가 정상적으로 표시되는지 확인하십시오.</li>
+        <li>표기가 보이지 않거나 일부 이미지가 누락되면 먼저 브라우저를 새로고침하십시오.</li>
+        <li>새로고침 후에도 표시되지 않으면 해당 턴의 출력이 깨진 것이므로 리롤하십시오.</li>
+      </ul>
+    </section>
+
+    <div class="duran-main-frame">
+      <img
+        src="https://dcimg2.dcinside.co.kr/viewimage.php?id=21a8de27f1d334ad&amp;no=24b0d769e1d32ca73ce787fa1bd625314b5d207020df860bbe98c96dc2c071c88e94639f37219a6ab23a2446891bd979e5444ad7a18327394ee5b22fd90149e4"
+        data-tempno="195905668"
+        class="gif-mp4 duran-main-img"
+        alt="듀란일대기 대표 이미지"
+      >
+    </div>
+
+    <div class="duran-badge">Chronicle of Duran</div>
+
+    <h1 class="duran-title">듀란일대기</h1>
+
+    <div class="duran-divider"></div>
+
+    <h2 class="duran-subtitle">그는 어떻게 죽지 못하는 기사가 되었나</h2>
+
+    <p class="duran-intro">
+      이름 없는 피난민으로 살아남은 소년 듀란.<br>
+      잿더미가 된 고향과 잊힌 맹세, 그리고 첫 전장의 문턱에서<br>
+      그는 기사도보다 먼저 생존의 의미를 배우기 시작한다.
+    </p>
+
+    <div class="duran-play-box">
+      <div class="duran-section-label">HOW TO PLAY</div>
+
+      <div class="duran-card-grid">
+        <div class="duran-step-card">
+          <div class="duran-card-img-wrapper">
+            <img src="https://github.com/musueman/duran-assets/blob/main/illust/card/001.png?raw=true" class="duran-card-img" alt="Step 1" onerror="this.src='https://placehold.co/400x250/1a1c23/ffd98a?text=Card+I'">
+          </div>
+          <div class="duran-step-content">
+            <div class="duran-step-number">I</div>
+            <div class="duran-step-title">운명의 카드가 뒤집힙니다</div>
+            <div class="duran-step-text">
+              턴이 시작되면 딜러가 새로운 카드를 공개합니다. 사건, 위협, 인물, 장소 등 마주할 운명의 장면이 펼쳐집니다.
+            </div>
+          </div>
+        </div>
+
+        <div class="duran-step-card">
+          <div class="duran-card-img-wrapper">
+            <img src="https://github.com/musueman/duran-assets/blob/main/illust/card/002.png?raw=true" class="duran-card-img" alt="Step 2" onerror="this.src='https://placehold.co/400x250/1a1c23/ffd98a?text=Card+II'">
+          </div>
+          <div class="duran-step-content">
+            <div class="duran-step-number">II</div>
+            <div class="duran-step-title">행동을 선언하십시오</div>
+            <div class="duran-step-text">
+              플레이어는 듀란이 무엇을 할지 결정합니다. 공격, 설득, 도주, 침묵 등 당신의 짧은 결단이 다음 장면을 이끕니다.
+            </div>
+          </div>
+        </div>
+
+        <div class="duran-step-card">
+          <div class="duran-card-img-wrapper">
+            <img src="https://github.com/musueman/duran-assets/blob/main/illust/card/003.png?raw=true" class="duran-card-img" alt="Step 3" onerror="this.src='https://placehold.co/400x250/1a1c23/ffd98a?text=Card+III'">
+          </div>
+          <div class="duran-step-content">
+            <div class="duran-step-number">III</div>
+            <div class="duran-step-title">주사위의 심판</div>
+            <div class="duran-step-text">
+              결과가 불확실한 행동은 주사위로 판정합니다. 성공은 길을 열지만, 실패는 장막의 개입을 부릅니다.
+            </div>
+          </div>
+        </div>
+
+        <div class="duran-step-card">
+          <div class="duran-card-img-wrapper">
+            <img src="https://github.com/musueman/duran-assets/blob/main/illust/card/004.png?raw=true" class="duran-card-img" alt="Step 4" onerror="this.src='https://placehold.co/400x250/1a1c23/ffd98a?text=Card+IV'">
+          </div>
+          <div class="duran-step-content">
+            <div class="duran-step-number">IV</div>
+            <div class="duran-step-title">지워지지 않는 흉터</div>
+            <div class="duran-step-text">
+              판정 결과는 다음 카드로 이어집니다. 듀란이 얻은 흔적, 상처, 원한은 사라지지 않고 발목을 잡습니다.
+            </div>
+          </div>
+        </div>
+
+        <div class="duran-step-card no-img-card">
+          <div class="duran-step-number">V</div>
+          <div class="duran-step-content">
+            <div class="duran-step-title">시작의 맹세</div>
+            <div class="duran-step-text">
+              처음 선택하는 '배경'이 듀란의 출발점을 정합니다. 이에 따라 칭호와 초기 장비가 변합니다.<br>
+              무음의 시작을 택한다면, 그는 언제나 <span class="highlight-text">하로몬트의 종자</span>로 이 잔혹한 서사시를 엽니다.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="duran-start-example">
+        이야기의 첫 장은 이렇게 넘기십시오.
+        <span>“듀란은 숨을 죽이고, 폐허 너머에서 들려오는 발소리를 살핀다.”</span>
+      </div>
+    </div>
+
+    <div class="duran-gallery-wrap" id="archive">
+      <div class="duran-section-label" style="margin-bottom: 10px;">ARCHIVE</div>
+      <div class="duran-subtitle" style="text-align: center; font-size: 16px; margin-bottom: 30px;">기록보관소</div>
+
+      <div class="duran-gallery-grid">
+        <a href="#archive-01" class="duran-gallery-item">
+          <img src="https://github.com/musueman/duran-assets/blob/main/illust/001%20(1).png?raw=true" class="duran-gallery-img" alt="Archive 1" onerror="this.src='https://placehold.co/300x400/14181c/ffd98a?text=Illust+1'">
+          <div class="duran-gallery-caption">Illust 01</div>
+        </a>
+
+        <a href="#archive-02" class="duran-gallery-item">
+          <img src="https://github.com/musueman/duran-assets/blob/main/illust/001%20(2).png?raw=true" class="duran-gallery-img" alt="Archive 2" onerror="this.src='https://placehold.co/300x400/14181c/ffd98a?text=Illust+2'">
+          <div class="duran-gallery-caption">Illust 02</div>
+        </a>
+
+        <a href="#archive-03" class="duran-gallery-item">
+          <img src="https://github.com/musueman/duran-assets/blob/main/illust/001%20(4).png?raw=true" class="duran-gallery-img" alt="Archive 3" onerror="this.src='https://placehold.co/300x400/14181c/ffd98a?text=Illust+3'">
+          <div class="duran-gallery-caption">Illust 03</div>
+        </a>
+
+        <a href="#archive-04" class="duran-gallery-item">
+          <img src="https://github.com/musueman/duran-assets/blob/main/illust/001%20(2).jpg?raw=true" class="duran-gallery-img" alt="Archive 4" onerror="this.src='https://placehold.co/300x400/14181c/ffd98a?text=Illust+4'">
+          <div class="duran-gallery-caption">Illust 04</div>
+        </a>
+
+        <a href="#archive-05" class="duran-gallery-item">
+          <img src="https://github.com/musueman/duran-assets/blob/main/illust/001%20(22).png?raw=true" class="duran-gallery-img" alt="Archive 5" onerror="this.src='https://placehold.co/300x400/14181c/ffd98a?text=Illust+5'">
+          <div class="duran-gallery-caption">Illust 05</div>
+        </a>
+
+        <a href="#archive-06" class="duran-gallery-item">
+          <img src="https://github.com/musueman/duran-assets/blob/main/illust/001%20(21).png?raw=true" class="duran-gallery-img" alt="Archive 6" onerror="this.src='https://placehold.co/300x400/14181c/ffd98a?text=Illust+6'">
+          <div class="duran-gallery-caption">Illust 06</div>
+        </a>
+
+        <a href="#archive-07" class="duran-gallery-item">
+          <img src="https://github.com/musueman/duran-assets/blob/main/illust/001%20(19).png?raw=true" class="duran-gallery-img" alt="Archive 7" onerror="this.src='https://placehold.co/300x400/14181c/ffd98a?text=Illust+7'">
+          <div class="duran-gallery-caption">Illust 07</div>
+        </a>
+
+        <a href="#archive-08" class="duran-gallery-item">
+          <img src="https://github.com/musueman/duran-assets/blob/main/illust/001%20(10).png?raw=true" class="duran-gallery-img" alt="Archive 8" onerror="this.src='https://placehold.co/300x400/14181c/ffd98a?text=Illust+8'">
+          <div class="duran-gallery-caption">Illust 08</div>
+        </a>
+      </div>
+    </div>
+
+    <div class="duran-footer">
+      GREENHOLLOW · RAVENSTONE · THE UNDYING KNIGHT
+    </div>
+  </div>
+
+  <div id="archive-01" class="duran-image-overlay">
+    <a href="#archive" class="duran-overlay-backdrop"></a>
+    <div class="duran-overlay-frame">
+      <a href="#archive" class="duran-overlay-close">×</a>
+      <img src="https://github.com/musueman/duran-assets/blob/main/illust/001%20(1).png?raw=true" class="duran-overlay-img" alt="Archive 1">
+      <div class="duran-overlay-caption">Illust 01</div>
+    </div>
+  </div>
+
+  <div id="archive-02" class="duran-image-overlay">
+    <a href="#archive" class="duran-overlay-backdrop"></a>
+    <div class="duran-overlay-frame">
+      <a href="#archive" class="duran-overlay-close">×</a>
+      <img src="https://github.com/musueman/duran-assets/blob/main/illust/001%20(2).png?raw=true" class="duran-overlay-img" alt="Archive 2">
+      <div class="duran-overlay-caption">Illust 02</div>
+    </div>
+  </div>
+
+  <div id="archive-03" class="duran-image-overlay">
+    <a href="#archive" class="duran-overlay-backdrop"></a>
+    <div class="duran-overlay-frame">
+      <a href="#archive" class="duran-overlay-close">×</a>
+      <img src="https://github.com/musueman/duran-assets/blob/main/illust/001%20(4).png?raw=true" class="duran-overlay-img" alt="Archive 3">
+      <div class="duran-overlay-caption">Illust 03</div>
+    </div>
+  </div>
+
+  <div id="archive-04" class="duran-image-overlay">
+    <a href="#archive" class="duran-overlay-backdrop"></a>
+    <div class="duran-overlay-frame">
+      <a href="#archive" class="duran-overlay-close">×</a>
+      <img src="https://github.com/musueman/duran-assets/blob/main/illust/001%20(2).jpg?raw=true" class="duran-overlay-img" alt="Archive 4">
+      <div class="duran-overlay-caption">Illust 04</div>
+    </div>
+  </div>
+
+  <div id="archive-05" class="duran-image-overlay">
+    <a href="#archive" class="duran-overlay-backdrop"></a>
+    <div class="duran-overlay-frame">
+      <a href="#archive" class="duran-overlay-close">×</a>
+      <img src="https://github.com/musueman/duran-assets/blob/main/illust/001%20(22).png?raw=true" class="duran-overlay-img" alt="Archive 5">
+      <div class="duran-overlay-caption">Illust 05</div>
+    </div>
+  </div>
+
+  <div id="archive-06" class="duran-image-overlay">
+    <a href="#archive" class="duran-overlay-backdrop"></a>
+    <div class="duran-overlay-frame">
+      <a href="#archive" class="duran-overlay-close">×</a>
+      <img src="https://github.com/musueman/duran-assets/blob/main/illust/001%20(21).png?raw=true" class="duran-overlay-img" alt="Archive 6">
+      <div class="duran-overlay-caption">Illust 06</div>
+    </div>
+  </div>
+
+  <div id="archive-07" class="duran-image-overlay">
+    <a href="#archive" class="duran-overlay-backdrop"></a>
+    <div class="duran-overlay-frame">
+      <a href="#archive" class="duran-overlay-close">×</a>
+      <img src="https://github.com/musueman/duran-assets/blob/main/illust/001%20(19).png?raw=true" class="duran-overlay-img" alt="Archive 7">
+      <div class="duran-overlay-caption">Illust 07</div>
+    </div>
+  </div>
+
+  <div id="archive-08" class="duran-image-overlay">
+    <a href="#archive" class="duran-overlay-backdrop"></a>
+    <div class="duran-overlay-frame">
+      <a href="#archive" class="duran-overlay-close">×</a>
+      <img src="https://github.com/musueman/duran-assets/blob/main/illust/001%20(10).png?raw=true" class="duran-overlay-img" alt="Archive 8">
+      <div class="duran-overlay-caption">Illust 08</div>
+    </div>
+  </div>
+</body>
+</html>

@@ -3,27 +3,46 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>듀란일대기 미리보기</title>
+  <title>듀란일대기 원고 뷰어 미리보기</title>
   <style>
     body {
       margin: 0;
       min-height: 100vh;
       display: grid;
       place-items: center;
-      color: #201f1a;
-      background: #f2f0ea;
+      color: #f9efd8;
+      background: #101411;
       font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", "Segoe UI", sans-serif;
     }
   </style>
 </head>
 <body>
-  <p>듀란일대기를 불러오는 중입니다.</p>
+  <p>아르카디아 원초기를 펼치는 중입니다.</p>
   <script type="module">
     import { renderDuranHomePage } from "./homepage.js";
 
+    const previewHash = new URLSearchParams(window.location.search).get("hash");
+    const initialHash = window.location.hash || (previewHash ? `#${previewHash.replace(/^#/, "")}` : "");
     document.open();
-    document.write(renderDuranHomePage({ assetBase: "." }));
+    document.write(renderDuranHomePage({ assetBase: ".", initialHash }));
     document.close();
+
+    if (initialHash) {
+      const jumpToInitialHash = () => {
+        const target = document.getElementById(decodeURIComponent(initialHash.slice(1)));
+        if (target) {
+          const y = Math.max(0, target.getBoundingClientRect().top + window.scrollY - 84);
+          const scroller = document.scrollingElement || document.documentElement;
+          if (scroller) scroller.scrollTop = y;
+          document.documentElement.scrollTop = y;
+          document.body.scrollTop = y;
+          window.scrollTo({ top: y, behavior: "auto" });
+        }
+      };
+      window.requestAnimationFrame(jumpToInitialHash);
+      window.setTimeout(jumpToInitialHash, 80);
+      window.setTimeout(jumpToInitialHash, 260);
+    }
   </script>
 </body>
 </html>
