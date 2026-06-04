@@ -117,58 +117,28 @@ const SOURCES = [
 
 const FULL_ARCHIVE = [
   {
-    id: "system",
-    title: "시스템 / 프롬프트 계약",
-    lead: "챗봇이 어떤 출력 형식을 지켜야 하는지, Worker URL과 상태 주석을 어떻게 유지하는지 확인하는 원문 묶음입니다.",
+    id: "current-system",
+    title: "현재 진행 시스템 원문",
+    lead: "챗봇이 답변을 어떤 형식으로 내보내야 하는지 정하는 중심 원문입니다. 이 파일이 전체 출력 규칙의 출발점입니다.",
     items: [
       {
         title: "현재 진행 시스템 원문",
         path: "lorebook_texts/00_현재_진행시스템.txt",
         kind: "system",
-        note: "실제 챗봇 출력 골자입니다. 본문을 Worker URL 안에 넣고, 출력 밖으로 서사를 흘리지 않게 만드는 핵심 계약을 담당합니다."
-      },
-      {
-        title: "Duran Prompt Rules",
-        path: "DURAN_PROMPT_RULES.md",
-        kind: "system",
-        note: "URL 예약문자, 상태 필드, OOC/디버그 보정 같은 유지보수 규칙을 문서화한 파일입니다."
-      },
-      {
-        title: "전체 공유 가이드",
-        path: "CHATBOT_WORKER_SYSTEM_SHARE_GUIDE.md",
-        kind: "system",
-        note: "이 구조를 다른 사람이 재사용할 수 있도록 목적, 사용법, 일반화 예시를 풀어둔 공유 문서입니다."
-      },
-      {
-        title: "Turn Worker 통합 문서",
-        path: "TURN_WORKER_INTEGRATION.md",
-        kind: "system",
-        note: "분리되어 있던 Worker들을 turn.svg 중심으로 묶은 이유와 호출 구조를 설명합니다."
-      },
-      {
-        title: "호환 및 라우팅 문서",
-        path: "WORKER_COMPATIBILITY_ROUTING.md",
-        kind: "system",
-        note: "구버전 URL, dev/prod 라우팅, fallback 경로가 어떻게 호환되는지 확인하는 운영 문서입니다."
+        note: "챗봇이 밖으로 일반 서사를 흘리지 않고, 정해진 출력 칸과 Worker 호출 주소 안에 내용을 넣도록 잡아주는 가장 중요한 규칙입니다."
       }
     ]
   },
   {
     id: "world",
     title: "세계관 / 진행축",
-    lead: "서사의 큰 축, 진행 방향, 세계 상태를 잡는 원문입니다.",
+    lead: "이야기가 어느 세계에서 어떤 방향으로 흘러가는지 잡아주는 기준입니다. 챗봇은 이 축을 바탕으로 장면과 사건을 고릅니다.",
     items: [
       {
         title: "세계관 진행축",
         path: "lorebook_texts/세계관_진행축.txt",
         kind: "world",
-        note: "듀란 일대기의 사건 진행 방향과 세계관 기준점을 잡아주는 파일입니다."
-      },
-      {
-        title: "홈페이지 원고 데이터",
-        path: "duran-homepage/manuscript-data.js",
-        kind: "world-generated-source",
-        note: "홈페이지에 쓰이는 긴 원고/세계관 데이터입니다. 사람이 읽는 원문이라기보다 공개 페이지가 불러 쓰는 생성 데이터에 가깝습니다."
+        note: "챗봇이 아무 장면이나 만들지 않도록, 듀란 일대기의 큰 배경과 진행 방향을 붙잡아주는 세계관 기준점입니다."
       }
     ]
   },
@@ -292,7 +262,7 @@ const FULL_ARCHIVE = [
   {
     id: "workers",
     title: "Worker 전문",
-    lead: "챗봇 출력물을 이미지/텍스트 패널/SVG로 바꾸는 Cloudflare Worker 소스입니다.",
+    lead: "챗봇이 만든 호출 주소를 실제 화면, 카드, 주사위, 대사창, 행동 장면으로 바꾸는 Cloudflare Worker 소스입니다.",
     items: [
       {
         title: "WebP Dice Worker",
@@ -333,173 +303,9 @@ const FULL_ARCHIVE = [
     ]
   },
   {
-    id: "public-pages",
-    title: "공개 페이지 / 플레이가이드",
-    lead: "챗봇 본체를 설명하거나 외부에 보여주기 위해 만든 홈페이지, 안내 페이지, 플레이가이드 변형 원문입니다.",
-    items: [
-      {
-        title: "Homepage Worker",
-        path: "duran-homepage/worker.js",
-        kind: "public-page-worker",
-        note: "듀란 홈페이지를 Cloudflare Worker로 내보내는 공개 페이지용 Worker입니다. 챗봇 턴 진행을 직접 처리하는 Worker와는 구분됩니다."
-      },
-      {
-        title: "Homepage App Script",
-        path: "duran-homepage/homepage.js",
-        kind: "public-page-js",
-        note: "홈페이지 화면 동작을 담당하는 JavaScript입니다."
-      },
-      {
-        title: "Homepage HTML",
-        path: "duran-homepage/index.html",
-        kind: "public-page-html",
-        note: "홈페이지의 기본 HTML 문서입니다."
-      },
-      {
-        title: "Homepage README",
-        path: "duran-homepage/README.md",
-        kind: "public-page-doc",
-        note: "홈페이지 프로젝트 설명 문서입니다."
-      },
-      {
-        title: "Notice Only Page",
-        path: "duran-homepage-notice-only.html",
-        kind: "public-page-html",
-        note: "별도 공지 전용 HTML 변형입니다."
-      },
-      {
-        title: "Duran Play Guide",
-        path: "duran-play-guide.html",
-        kind: "play-guide-html",
-        note: "플레이 방법을 보여주는 기본 가이드 HTML입니다."
-      },
-      {
-        title: "Duran Play Guide Embed",
-        path: "duran-play-guide-embed.html",
-        kind: "play-guide-html",
-        note: "다른 페이지 안에 넣기 쉬운 임베드형 플레이가이드입니다."
-      },
-      {
-        title: "Board Safe Play Guide",
-        path: "duran-play-guide-board-safe.html",
-        kind: "play-guide-variant",
-        note: "게시판 환경에 맞춘 안전형 플레이가이드 변형입니다."
-      },
-      {
-        title: "Board Inline Play Guide",
-        path: "duran-play-guide-board-inline.html",
-        kind: "play-guide-variant",
-        note: "게시판에 인라인으로 넣기 위한 플레이가이드 변형입니다."
-      },
-      {
-        title: "Board Light Safe Play Guide",
-        path: "duran-play-guide-board-light-safe.html",
-        kind: "play-guide-variant",
-        note: "더 가벼운 게시판 안전형 플레이가이드 변형입니다."
-      },
-      {
-        title: "Board Postsafe Play Guide",
-        path: "duran-play-guide-board-postsafe.html",
-        kind: "play-guide-variant",
-        note: "게시 후 깨짐을 줄이기 위한 플레이가이드 변형입니다."
-      },
-      {
-        title: "Docs Page Worker",
-        path: "worker-system-page/worker.js",
-        kind: "public-page-worker",
-        note: "지금 보고 있는 공개 문서/원문 아카이브 페이지를 제공하는 Worker입니다."
-      },
-      {
-        title: "Docs Page README",
-        path: "worker-system-page/README.md",
-        kind: "public-page-doc",
-        note: "공개 문서 페이지의 배포와 구조를 설명하는 README입니다."
-      }
-    ]
-  },
-  {
-    id: "configs",
-    title: "Worker 설정 / 보조 문서",
-    lead: "배포 이름, dev/prod 분리, service binding, Worker별 README를 확인하는 원문입니다.",
-    items: [
-      {
-        title: "Dice wrangler",
-        path: "wrangler.dice.toml",
-        kind: "config",
-        note: "Dice Worker 배포 설정입니다."
-      },
-      {
-        title: "Dialogue wrangler",
-        path: "dchat/wrangler.toml",
-        kind: "config",
-        note: "대사 Worker 배포 설정입니다."
-      },
-      {
-        title: "Action wrangler",
-        path: "duran-action/wrangler.toml",
-        kind: "config",
-        note: "Action Worker 배포 설정입니다."
-      },
-      {
-        title: "Sprite wrangler",
-        path: "duran-sprite/wrangler.toml",
-        kind: "config",
-        note: "Sprite Worker 배포 설정입니다."
-      },
-      {
-        title: "Turn wrangler",
-        path: "duran-turn/wrangler.toml",
-        kind: "config",
-        note: "Turn Worker의 dev/prod service binding 설정입니다."
-      },
-      {
-        title: "Homepage wrangler",
-        path: "duran-homepage/wrangler.toml",
-        kind: "config",
-        note: "홈페이지 Worker 배포 설정입니다."
-      },
-      {
-        title: "Docs Page wrangler",
-        path: "worker-system-page/wrangler.toml",
-        kind: "config",
-        note: "공개 문서 페이지 Worker 배포 설정입니다."
-      },
-      {
-        title: "Dialogue README",
-        path: "dchat/README.md",
-        kind: "readme",
-        note: "Dialogue Worker 사용법과 엔드포인트 설명입니다."
-      },
-      {
-        title: "Sprite README",
-        path: "duran-sprite/README.md",
-        kind: "readme",
-        note: "Sprite Worker 보조 설명입니다."
-      },
-      {
-        title: "Turn README",
-        path: "duran-turn/README.md",
-        kind: "readme",
-        note: "Turn Worker 보조 설명입니다."
-      },
-      {
-        title: "Repository README",
-        path: "README.md",
-        kind: "readme",
-        note: "저장소 최상위 설명입니다."
-      },
-      {
-        title: "Deployment",
-        path: "DEPLOYMENT.md",
-        kind: "readme",
-        note: "배포 URL과 배포 절차 기록입니다."
-      }
-    ]
-  },
-  {
     id: "operation-docs",
     title: "기능별 정상작동 문서",
-    lead: "각 Worker가 정상작동한다고 판단하는 기준과 기능 해설을 따로 정리한 문서입니다.",
+    lead: "맨 마지막에 보는 참고 자료입니다. 실제 원문과 Worker 전문을 본 뒤, 각 기능이 정상인지 확인할 때 사용합니다.",
     items: [
       {
         title: "Dice Worker 정상작동",
@@ -1203,7 +1009,7 @@ function renderArchiveHtml() {
     }
     .overview-grid {
       display: grid;
-      grid-template-columns: repeat(5, minmax(160px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
       gap: 10px;
       margin-top: 16px;
     }
@@ -1403,7 +1209,7 @@ function renderArchiveHtml() {
   <header class="hero">
     <p class="eyebrow">Duran Chatbot Full Archive</p>
     <h1>듀란 챗봇을 처음 만드는 사람을 위한 전체 원문 해설</h1>
-    <p class="lead">이 페이지는 시스템, 로어북, 세계관, 캐릭터 정보, Cloudflare Worker 전문을 빼지 않고 보여줍니다. 먼저 전체 작동 흐름을 쉬운 말로 보고, 아래에서 원문을 하나씩 확인한 뒤 마지막 주석으로 역할을 이해하는 구조입니다. 원문은 공개 GitHub main 브랜치 기준으로 불러옵니다.</p>
+    <p class="lead">이 페이지는 듀란 챗봇이 답변을 만드는 데 직접 쓰는 원문만 남깁니다. 현재 진행 시스템이 출력 형식을 잡고, 세계관과 로어북과 캐릭터 정보가 이야기 내용을 만들고, Worker가 그 내용을 화면으로 바꿔 챗봇 답변 안에 내보내는 흐름을 먼저 설명합니다.</p>
     <nav class="quick-links" aria-label="상단 이동">
       <a href="/">개발자용 문서 뷰어</a>
       <a href="#overview">작동 흐름</a>
@@ -1414,32 +1220,34 @@ function renderArchiveHtml() {
 
   <main>
     <section id="overview">
-      <h2>전체 구조 먼저 보기</h2>
-      <p class="plain">이 시스템은 챗봇이 이야기를 정해진 칸에 쓰고, Cloudflare Worker가 그 값을 이미지나 화면처럼 보이게 바꾸는 방식입니다.</p>
+      <h2>카테고리가 이어지는 방식</h2>
+      <p class="plain">각 원문은 따로 노는 파일이 아닙니다. 아래 순서대로 이어져서 사용자가 보는 챗봇 답변 하나를 만듭니다.</p>
       <div class="overview-grid">
-        <div class="step"><span>1</span><strong>챗봇 시스템</strong>챗봇에게 “본문은 밖에 쓰지 말고 정해진 주소 안에 넣어라” 같은 출력 규칙을 알려줍니다.</div>
-        <div class="step"><span>2</span><strong>로어북</strong>챗봇이 잊으면 안 되는 규칙 노트입니다. 상태, 카드, 판정, 엔딩 조건을 붙잡습니다.</div>
-        <div class="step"><span>3</span><strong>세계관/캐릭터</strong>이야기의 재료입니다. 어떤 세계인지, 누가 등장하는지, 무엇을 기억해야 하는지 정합니다.</div>
-        <div class="step"><span>4</span><strong>Worker URL</strong>챗봇이 만든 호출 주소입니다. 이 주소를 열면 Worker가 글자를 이미지나 패널로 바꿉니다.</div>
-        <div class="step"><span>5</span><strong>Turn Worker</strong>여러 Worker 결과를 한 턴 화면으로 묶고, 다음 턴에 쓸 상태를 남깁니다.</div>
+        <div class="step"><span>1</span><strong>현재 진행 시스템 원문</strong>챗봇의 출력 형식을 정합니다. 무엇을 밖에 쓰면 안 되는지, 무엇을 Worker 주소 안에 넣어야 하는지 알려줍니다.</div>
+        <div class="step"><span>2</span><strong>세계관 진행축</strong>이야기의 큰 방향을 잡습니다. 챗봇이 장면을 만들 때 세계의 분위기와 사건 흐름을 여기서 가져옵니다.</div>
+        <div class="step"><span>3</span><strong>로어북 원문</strong>진행 규칙을 붙잡습니다. 상태, 카드, 판정, 시작 조건, 위험 조건 같은 운영 규칙을 챗봇이 참고합니다.</div>
+        <div class="step"><span>4</span><strong>로어북 500자 버전</strong>같은 규칙을 더 짧게 쓰는 압축판입니다. 플랫폼에 넣을 공간이 부족할 때 비교해서 쓸 수 있습니다.</div>
+        <div class="step"><span>5</span><strong>캐릭터 정보</strong>등장인물의 기준입니다. 챗봇은 캐릭터 성격, 관계, 역할을 여기서 가져와 대사와 행동을 만듭니다.</div>
+        <div class="step"><span>6</span><strong>Worker 전문</strong>챗봇이 만든 값을 화면으로 바꿉니다. 주사위, 카드, 장면, 대사창, 행동 연출이 여기서 만들어집니다.</div>
+        <div class="step"><span>7</span><strong>기능별 정상작동 문서</strong>마지막 참고 자료입니다. 원문과 Worker를 본 뒤 각 기능이 제대로 동작하는지 확인할 때 봅니다.</div>
       </div>
       <div class="flow" aria-label="작동 흐름">
         <b>사용자 입력</b><span>→</span>
-        <b>챗봇 판단</b><span>→</span>
-        <b>슬롯 채우기</b><span>→</span>
-        <b>Turn Worker</b><span>→</span>
-        <b>Dice/Scene/Dialogue/Action</b><span>→</span>
-        <b>화면 출력</b><span>→</span>
-        <b>상태 주석</b><span>→</span>
-        <b>다음 턴</b>
+        <b>현재 진행 시스템이 출력 형식 고정</b><span>→</span>
+        <b>세계관/로어북/캐릭터로 내용 결정</b><span>→</span>
+        <b>Worker URL 작성</b><span>→</span>
+        <b>Worker가 화면 생성</b><span>→</span>
+        <b>챗봇 답변에 표시</b><span>→</span>
+        <b>상태값이 다음 턴으로 이어짐</b>
       </div>
     </section>
 
     <section id="terms">
       <h2>처음 보는 용어</h2>
       <div class="terms">
-        <div class="term"><strong>시스템</strong>챗봇이 반드시 지켜야 하는 기본 규칙입니다. 말투보다 출력 형식을 잡는 역할이 큽니다.</div>
-        <div class="term"><strong>로어북</strong>챗봇이 상황에 맞게 꺼내 보는 규칙 노트입니다. 이야기 설정과 진행 규칙이 들어갑니다.</div>
+        <div class="term"><strong>현재 진행 시스템</strong>챗봇 답변의 틀입니다. 이야기 본문을 어디에 넣고, 상태값을 어떻게 남길지 정합니다.</div>
+        <div class="term"><strong>로어북</strong>챗봇이 상황에 맞게 꺼내 보는 규칙 노트입니다. 세계 설정보다 “진행 중 지켜야 할 규칙”에 가깝습니다.</div>
+        <div class="term"><strong>500자 버전</strong>긴 로어북을 짧게 줄인 버전입니다. 공간이 좁은 플랫폼에 넣을 때 비교 자료로 씁니다.</div>
         <div class="term"><strong>Worker</strong>Cloudflare에서 돌아가는 작은 서버입니다. 주소를 받으면 이미지, SVG, 텍스트 패널을 만들어 돌려줍니다.</div>
         <div class="term"><strong>슬롯</strong>값을 넣는 정해진 칸입니다. 예를 들어 대사, 배경, 표정, 상태 같은 값을 각 칸에 넣습니다.</div>
         <div class="term"><strong>Worker URL</strong>챗봇 답변 안에 들어가는 호출 주소입니다. 이야기 본문과 상태값이 이 주소 안에 담깁니다.</div>
@@ -1450,7 +1258,7 @@ function renderArchiveHtml() {
 
     <section>
       <h2>읽는 순서</h2>
-      <p class="plain">처음이라면 시스템 → 세계관 → 로어북 → 캐릭터 → Worker → 설정 순서로 보면 됩니다. 코드를 먼저 이해하려고 하면 어렵습니다. 먼저 “왜 이런 구조가 필요한지”를 보고, 그 다음 원문을 보면 됩니다. 개발자용 세부 문서는 따로 보관하고, 이 페이지는 따라 읽는 순서를 우선합니다.</p>
+      <p class="plain">처음이라면 현재 진행 시스템 원문 → 세계관 진행축 → 로어북 원문 → 로어북 500자 버전 → 캐릭터 정보 → Worker 전문 순서로 보면 됩니다. 기능별 정상작동 문서는 맨 마지막 참고 자료로 보면 됩니다.</p>
       <nav id="toc" class="toc" aria-label="원문 카테고리"></nav>
     </section>
 
